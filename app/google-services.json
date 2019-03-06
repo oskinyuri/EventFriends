@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "258645688072",
+    "firebase_url": "https://eventfriends-1edd5.firebaseio.com",
+    "project_id": "eventfriends-1edd5",
+    "storage_bucket": "eventfriends-1edd5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:258645688072:android:d47073703a39d038",
+        "android_client_info": {
+          "package_name": "io.eventfriends"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "258645688072-2gelnroir9uo079d259dteagmovu6qpq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.eventfriends",
+            "certificate_hash": "c30ff3c672943fe106bfeed785632a428157d68f"
+          }
+        },
+        {
+          "client_id": "258645688072-mnme9n5uu1mci6f5dl08j36ggftsc4e4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCurcvSWbNlGgK1wQkuLRQsvBuV2nRUUMQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "258645688072-mnme9n5uu1mci6f5dl08j36ggftsc4e4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
