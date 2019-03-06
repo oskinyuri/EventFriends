@@ -21,7 +21,16 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.eventfriends.R;
+import io.reactivex.Completable;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.observers.DisposableCompletableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements MainView {
 
@@ -32,6 +41,10 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private TextView mUserName;
     private FirebaseUser mFirebaseUser;
     private FirebaseAuth mFirebaseAuth;
+    Disposable disposable;
+
+    //@Inject
+    private MainPresentor mPresentor = new MainPresentor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,19 +54,20 @@ public class MainActivity extends AppCompatActivity implements MainView {
         mUserName = findViewById(R.id.main_user_name);
 
         mSignInBtn = findViewById(R.id.main_sign_in_btn);
-        mSignInBtn.setOnClickListener((view) -> createSignInIntent());
+        mSignInBtn.setOnClickListener((view) -> startSignInActivity(new Intent(), 123));
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         if (mFirebaseUser == null) {
             // Not signed in, launch the Sign In activity
-            createSignInIntent();
+            startSignInActivity(new Intent(), 123);
         } else {
             mUserName.setText(mFirebaseUser.getDisplayName());
         }
     }
 
-    private void createSignInIntent() {
+    @Override
+    public void startSignInActivity(Intent intent, int requestCode) {
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -99,15 +113,28 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     protected void signOut() {
-        AuthUI.getInstance()
+
+        disposable = Completable.create(emitter -> AuthUI.getInstance().signOut(this).addOnCompleteListener((task) -> emitter.onComplete()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    MainActivity.this.startSignInActivity(new Intent(), 123);
+                    disposable.dispose();
+                });
+
+        /*() -> {
+            startSignInActivity(new Intent(), 123);
+        }*/
+
+        /*AuthUI.getInstance()
                 .signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     public void onComplete(@NonNull Task<Void> task) {
                         // ...
-                        createSignInIntent();
+                        startSignInActivity();
                         //updateUi();
                     }
-                });
+                });*/
     }
 
     @Override

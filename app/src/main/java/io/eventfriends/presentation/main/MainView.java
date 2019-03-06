@@ -1,6 +1,10 @@
 package io.eventfriends.presentation.main;
 
+import android.content.Intent;
+
 public interface MainView {
+
+    public void startSignInActivity(Intent intent, int requestCode);
 
     void showProgress();
 
