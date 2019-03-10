@@ -1,50 +1,29 @@
 package io.eventfriends.presentation.main;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.util.Arrays;
-import java.util.List;
 
 import javax.inject.Inject;
 
+import io.eventfriends.EventFriendsApp;
 import io.eventfriends.R;
-import io.reactivex.Completable;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.observers.DisposableCompletableObserver;
-import io.reactivex.schedulers.Schedulers;
+import io.eventfriends.di.components.MainComponent;
 
 public class MainActivity extends AppCompatActivity implements MainView {
 
-    private static final int RC_SIGN_IN = 123;
-
-    //test
-    private Button mSignInBtn;
     private TextView mUserName;
-    private FirebaseUser mFirebaseUser;
-    private FirebaseAuth mFirebaseAuth;
-    Disposable disposable;
+    private int mRequestCodeSignIn;
 
-    //@Inject
-    private MainPresentor mPresentor = new MainPresentor();
+    @Inject
+    public MainPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,46 +32,32 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
         mUserName = findViewById(R.id.main_user_name);
 
-        mSignInBtn = findViewById(R.id.main_sign_in_btn);
-        mSignInBtn.setOnClickListener((view) -> startSignInActivity(new Intent(), 123));
+        MainComponent component = EventFriendsApp.getInstance().getComponentsBuilder().getMainComponent();
+        component.injectMain(this);
+    }
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        if (mFirebaseUser == null) {
-            // Not signed in, launch the Sign In activity
-            startSignInActivity(new Intent(), 123);
-        } else {
-            mUserName.setText(mFirebaseUser.getDisplayName());
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mPresenter.onAttach(this);
     }
 
     @Override
     public void startSignInActivity(Intent intent, int requestCode) {
-        // Choose authentication providers
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build());
-
-        // Create and launch sign-in intent
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build(),
-                RC_SIGN_IN);
+        mRequestCodeSignIn = requestCode;
+        startActivityForResult(intent, mRequestCodeSignIn);
     }
 
+    //Maybe once it would be useful
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == mRequestCodeSignIn) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
-                mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                updateUi();
                 // ...
             } else {
                 finish();
@@ -102,39 +67,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 // ...
             }
         }
-    }
-
-    private void updateUi() {
-        if (mFirebaseUser == null) {
-            mUserName.setText("ANONYMOUS");
-        } else {
-            mUserName.setText(mFirebaseUser.getDisplayName());
-        }
-    }
-
-    protected void signOut() {
-
-        disposable = Completable.create(emitter -> AuthUI.getInstance().signOut(this).addOnCompleteListener((task) -> emitter.onComplete()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> {
-                    MainActivity.this.startSignInActivity(new Intent(), 123);
-                    disposable.dispose();
-                });
-
-        /*() -> {
-            startSignInActivity(new Intent(), 123);
-        }*/
-
-        /*AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
-                        startSignInActivity();
-                        //updateUi();
-                    }
-                });*/
     }
 
     @Override
@@ -148,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_exit:
-                signOut();
+                mPresenter.signOut();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -168,5 +100,16 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Override
     public void showToast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setUserName(String text) {
+        mUserName.setText(text);
+    }
+
+    @Override
+    protected void onStop() {
+        mPresenter.onDetach();
+        super.onStop();
     }
 }
