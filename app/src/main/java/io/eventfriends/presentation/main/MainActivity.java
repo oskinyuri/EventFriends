@@ -38,16 +38,16 @@ public class MainActivity extends AppCompatActivity implements MainView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mToolbar = findViewById(R.id.mainToolbar);
-        setSupportActionBar(mToolbar);
+        //mToolbar = findViewById(R.id.mainToolbar);
+        //setSupportActionBar(mToolbar);
 
         MainComponent component = EventFriendsApp.getInstance().getComponentsBuilder().getMainComponent();
         component.injectMain(this);
 
         mNavController = Navigation.findNavController(this, R.id.main_host_fragment);
-        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_graph).build();
+        //mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_graph).build();
 
-        NavigationUI.setupWithNavController(mToolbar, mNavController, mAppBarConfiguration);
+        //NavigationUI.setupWithNavController(mToolbar, mNavController, mAppBarConfiguration);
     }
 
     @Override

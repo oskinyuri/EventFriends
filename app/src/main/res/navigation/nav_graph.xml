@@ -9,5 +9,14 @@
         android:id="@+id/eventsListFragment"
         android:name="io.eventfriends.presentation.eventList.EventsListFragment"
         android:label="fragment_events_list"
-        tools:layout="@layout/fragment_events_list" />
+        tools:layout="@layout/fragment_events_list" >
+        <action
+            android:id="@+id/action_eventsListFragment_to_createEventFragment"
+            app:destination="@id/createEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createEventFragment"
+        android:name="io.eventfriends.presentation.createEvent.CreateEventFragment"
+        android:label="fragment_create_event"
+        tools:layout="@layout/fragment_create_event" />
 </navigation>
