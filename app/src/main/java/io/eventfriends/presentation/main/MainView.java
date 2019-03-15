@@ -12,6 +12,4 @@ public interface MainView {
 
     void showToast(String text);
 
-    void setUserName(String text);
-
 }

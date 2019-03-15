@@ -123,9 +123,9 @@ public class MainPresenter {
 
     public void updateUi(){
         if (mFirebaseUser == null) {
-            mView.setUserName("ANONYMOUS");
+
         } else {
-            mView.setUserName(mFirebaseUser.getDisplayName());
+
         }
     }
 
