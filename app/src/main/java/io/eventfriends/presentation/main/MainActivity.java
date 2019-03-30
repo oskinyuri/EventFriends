@@ -2,7 +2,7 @@ package io.eventfriends.presentation.main;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         mPresenter.onAttach(this);
     }
 
@@ -108,8 +108,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
         mPresenter.onDetach();
-        super.onStop();
+        super.onPause();
     }
 }
