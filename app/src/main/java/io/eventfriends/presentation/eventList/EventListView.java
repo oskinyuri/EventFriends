@@ -8,4 +8,6 @@ public interface EventListView {
 
     void hideProgress();
 
+    void startSplashScreen();
+
 }

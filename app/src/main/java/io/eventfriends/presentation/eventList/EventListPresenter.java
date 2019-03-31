@@ -1,31 +1,32 @@
-package io.eventfriends.presentation.main;
+package io.eventfriends.presentation.eventList;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import io.eventfriends.domain.AuthInteractor;
+import io.eventfriends.presentation.main.MainView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainPresenter {
+public class EventListPresenter {
 
-    private MainView mView;
+    private EventListView mView;
 
     private FirebaseAuth mFirebaseAuth;
+
     private FirebaseUser mFirebaseUser;
     private AuthInteractor mAuthInteractor;
     private CompositeDisposable mCompositeDisposable;
 
-    public MainPresenter(AuthInteractor authInteractor,
-                         CompositeDisposable compositeDisposable) {
+    public EventListPresenter(AuthInteractor authInteractor,
+                              CompositeDisposable compositeDisposable) {
 
         mAuthInteractor = authInteractor;
         mCompositeDisposable = compositeDisposable;
     }
 
-
-    public void onAttach(MainView view) {
+    public void onAtach(EventListView view){
         mView = view;
         getFirebaseAuth();
     }
@@ -55,4 +56,5 @@ public class MainPresenter {
                     mFirebaseUser = mFirebaseAuth.getCurrentUser();
                 }));
     }
+
 }

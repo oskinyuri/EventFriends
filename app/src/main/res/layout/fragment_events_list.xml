@@ -7,26 +7,11 @@
     tools:context=".presentation.eventList.EventsListFragment"
     >
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/mainAppBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/mainToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_anchorGravity="bottom|center"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -53,6 +38,8 @@
         android:id="@+id/list_events_bottom_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_black_24dp"
+        app:backgroundTint="@color/secondaryDarkColor"
         app:layout_anchor="@id/list_events_bottom_bar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

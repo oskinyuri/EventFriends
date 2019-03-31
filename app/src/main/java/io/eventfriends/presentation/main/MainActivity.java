@@ -1,26 +1,26 @@
 package io.eventfriends.presentation.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.firebase.ui.auth.IdpResponse;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
-import io.eventfriends.EventFriendsApp;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 import io.eventfriends.R;
-import io.eventfriends.di.components.MainComponent;
 
-public class MainActivity extends AppCompatActivity implements MainView {
+public class MainActivity extends AppCompatActivity {
 
-    private TextView mUserName;
-    private int mRequestCodeSignIn;
+    private NavController mNavController;
+    private AppBarConfiguration mAppBarConfiguration;
+    private Toolbar mToolbar;
 
     @Inject
     public MainPresenter mPresenter;
@@ -30,86 +30,20 @@ public class MainActivity extends AppCompatActivity implements MainView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mUserName = findViewById(R.id.main_user_name);
+        mToolbar = findViewById(R.id.main_toolbar);
 
-        MainComponent component = EventFriendsApp.getInstance().getComponentsBuilder().getMainComponent();
-        component.injectMain(this);
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.eventsListFragment).build();
+        mNavController = Navigation.findNavController(this, R.id.main_host_fragment);
+        NavigationUI.setupWithNavController(mToolbar, mNavController, mAppBarConfiguration);
+
+        /*MainComponent component = EventFriendsApp.getInstance().getComponentsBuilder().getMainComponent();
+        component.injectMain(this);*/
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mPresenter.onAttach(this);
-    }
-
-    @Override
-    public void startSignInActivity(Intent intent, int requestCode) {
-        mRequestCodeSignIn = requestCode;
-        startActivityForResult(intent, mRequestCodeSignIn);
-    }
-
-    //Maybe once it would be useful
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == mRequestCodeSignIn) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
-            if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                // ...
-            } else {
-                finish();
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
-            }
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_exit:
-                mPresenter.signOut();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void showProgress() {
-        //TODO
-    }
-
-    @Override
-    public void hideProgress() {
-        //TODO
-    }
-
-    @Override
-    public void showToast(String text) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void setUserName(String text) {
-        mUserName.setText(text);
-    }
-
-    @Override
-    protected void onPause() {
-        mPresenter.onDetach();
-        super.onPause();
+    public static Intent newIntent(Context context){
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
     }
 }

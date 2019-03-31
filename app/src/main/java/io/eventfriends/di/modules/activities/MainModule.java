@@ -18,9 +18,10 @@ public class MainModule {
 
     @MainScope
     @Provides
-    public MainPresenter getMainPresentor(AuthInteractor authInteractor,
-                                          CompositeDisposable compositeDisposable) {
+    public MainPresenter getMainPresenter(AuthInteractor authInteractor,
+                                            CompositeDisposable compositeDisposable) {
         return new MainPresenter(authInteractor, compositeDisposable);
     }
 
 }
+
