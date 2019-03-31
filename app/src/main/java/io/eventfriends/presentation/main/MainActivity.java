@@ -2,33 +2,25 @@ package io.eventfriends.presentation.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import javax.inject.Inject;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import io.eventfriends.EventFriendsApp;
 import io.eventfriends.R;
 import io.eventfriends.di.components.MainComponent;
 
 public class MainActivity extends AppCompatActivity implements MainView {
 
+    private TextView mUserName;
     private int mRequestCodeSignIn;
-
-    private NavController mNavController;
-    private AppBarConfiguration mAppBarConfiguration;
-    private Toolbar mToolbar;
 
     @Inject
     public MainPresenter mPresenter;
@@ -38,27 +30,16 @@ public class MainActivity extends AppCompatActivity implements MainView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //mToolbar = findViewById(R.id.mainToolbar);
-        //setSupportActionBar(mToolbar);
+        mUserName = findViewById(R.id.main_user_name);
 
         MainComponent component = EventFriendsApp.getInstance().getComponentsBuilder().getMainComponent();
         component.injectMain(this);
-
-        mNavController = Navigation.findNavController(this, R.id.main_host_fragment);
-        //mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_graph).build();
-
-        //NavigationUI.setupWithNavController(mToolbar, mNavController, mAppBarConfiguration);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mPresenter.onAttach(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        mPresenter.onAttach(this);
     }
 
     @Override
@@ -122,8 +103,13 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
-    protected void onStop() {
+    public void setUserName(String text) {
+        mUserName.setText(text);
+    }
+
+    @Override
+    protected void onPause() {
         mPresenter.onDetach();
-        super.onStop();
+        super.onPause();
     }
 }
