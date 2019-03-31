@@ -23,7 +23,6 @@ public class CreateEventFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         mNavController = Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.main_host_fragment);
     }
 
@@ -34,11 +33,5 @@ public class CreateEventFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
         return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.main_menu, menu);
     }
 }
