@@ -12,16 +12,17 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.eventfriends.EventFriendsApp;
 import io.eventfriends.R;
+import io.eventfriends.di.components.EventListComponent;
 import io.eventfriends.presentation.splashActivity.SplashScreen;
 
 
@@ -33,6 +34,7 @@ public class EventsListFragment extends Fragment implements EventListView {
     private FloatingActionButton mFabButton;
     private NavController mNavController;
 
+    @Inject
     public EventListPresenter mPresenter;
 
     public EventsListFragment() {
@@ -43,6 +45,8 @@ public class EventsListFragment extends Fragment implements EventListView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        EventListComponent component = EventFriendsApp.getInstance().getComponentsBuilder().getEventListComponent();
+        component.injectEventList(this);
     }
 
     @Override
@@ -69,6 +73,12 @@ public class EventsListFragment extends Fragment implements EventListView {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.onAtach(this);
+    }
+
+    @Override
     public void updateList() {
 
     }
@@ -91,7 +101,6 @@ public class EventsListFragment extends Fragment implements EventListView {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -103,5 +112,11 @@ public class EventsListFragment extends Fragment implements EventListView {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onPause() {
+        mPresenter.onDetach();
+        super.onPause();
     }
 }

@@ -3,8 +3,13 @@ package io.eventfriends.presentation.main;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.Objects;
+import java.util.zip.Inflater;
 
 import javax.inject.Inject;
 
@@ -31,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mToolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(mToolbar);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.eventsListFragment).build();
         mNavController = Navigation.findNavController(this, R.id.main_host_fragment);

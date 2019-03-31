@@ -4,8 +4,10 @@ import android.content.Context;
 
 import io.eventfriends.di.components.AppComponent;
 import io.eventfriends.di.components.DaggerAppComponent;
+import io.eventfriends.di.components.DaggerEventListComponent;
 import io.eventfriends.di.components.DaggerMainComponent;
 import io.eventfriends.di.components.DaggerSplashComponent;
+import io.eventfriends.di.components.EventListComponent;
 import io.eventfriends.di.components.MainComponent;
 import io.eventfriends.di.components.SplashComponent;
 import io.eventfriends.di.modules.app.ContextModule;
@@ -37,5 +39,9 @@ public class ComponentsBuilder {
                 .build();
     }
 
-
+    public EventListComponent getEventListComponent(){
+        return DaggerEventListComponent.builder()
+                .appComponent(getAppComponent())
+                .build();
+    }
 }

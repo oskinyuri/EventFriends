@@ -146,9 +146,10 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_add_black_24dp" />
-                            <entry key="sourceFile" value="C:\Users\oskin\Downloads\baseline-exit_to_app-24px.svg" />
+                            <entry key="outputName" value="un_like" />
+                            <entry key="sourceFile" value="C:\Users\oskin\Desktop\like\Icon - Favorite - Filled.svg" />
                           </map>
                         </option>
                       </PersistentState>
