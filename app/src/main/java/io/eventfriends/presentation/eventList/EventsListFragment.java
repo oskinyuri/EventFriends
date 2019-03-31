@@ -58,9 +58,7 @@ public class EventsListFragment extends Fragment implements EventListView {
         RecyclerView.LayoutManager linearLayout = new LinearLayoutManager(container.getContext());
         mRecyclerView.setLayoutManager(linearLayout);
 
-        int[] data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2,
-                3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7,
-                8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int[] data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2};
 
         mListAdapter = new EventListAdapter(data);
         mRecyclerView.setAdapter(mListAdapter);

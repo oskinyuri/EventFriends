@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/mtrl_card_spacing"
-    android:layout_marginBottom="@dimen/mtrl_card_spacing"
     android:layout_marginRight="@dimen/mtrl_card_spacing"
+    android:layout_marginBottom="@dimen/mtrl_card_spacing"
     android:elevation="1dp"
-    android:minHeight="200dp">
+    android:minHeight="200dp"
+    app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             android:layout_marginEnd="8dp"
             android:fontFamily="sans-serif"
             android:letterSpacing="1.5"
-            android:text="Event type"
+            android:text="@string/event_type"
             android:textAllCaps="true"
             android:textSize="10sp"
             app:layout_constraintBottom_toTopOf="@+id/event_item_title"
@@ -43,7 +43,7 @@
             android:layout_marginEnd="8dp"
             android:fontFamily="sans-serif-medium"
             android:letterSpacing="0.15"
-            android:text="Event title"
+            android:text="@string/event_title"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/event_item_text"
             app:layout_constraintEnd_toStartOf="@+id/event_item_profile_photo"
@@ -59,9 +59,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
             android:ellipsize="end"
-            android:letterSpacing="0.5"
             android:maxLines="3"
-            android:text="Event text body bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla"
+            android:text="@string/event_text_body"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline"
             app:layout_constraintEnd_toStartOf="@+id/event_item_profile_photo"
@@ -71,12 +70,15 @@
 
         <ImageView
             android:id="@+id/event_item_profile_photo"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_user_image"
             app:layout_constraintBottom_toTopOf="@+id/guideline"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars" />
@@ -88,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
-            android:text="Message"
+            android:text="@string/message"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/event_item_more_btn"
             app:layout_constraintHorizontal_bias="0.5"
@@ -100,7 +102,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="More"
+            android:text="@string/more"
             app:layout_constraintBottom_toBottomOf="@+id/event_item_msg_btn"
             app:layout_constraintEnd_toStartOf="@+id/event_item_hide_btn"
             app:layout_constraintHorizontal_bias="0.5"
@@ -112,7 +114,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hide"
+            android:text="@string/hide"
             app:layout_constraintBottom_toBottomOf="@+id/event_item_more_btn"
             app:layout_constraintEnd_toStartOf="@+id/event_item_like_btn"
             app:layout_constraintHorizontal_bias="0.5"
@@ -139,7 +141,6 @@
             app:layout_constraintGuide_begin="160dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </com.google.android.material.card.MaterialCardView>
