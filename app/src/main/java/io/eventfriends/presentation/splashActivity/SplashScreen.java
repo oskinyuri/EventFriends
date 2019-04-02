@@ -53,7 +53,12 @@ public class SplashScreen extends AppCompatActivity implements SplashView {
         if (requestCode == mRequestCodeSignIn) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
+
             if (resultCode == RESULT_OK) {
+                //TODO создать db пользователей и сохранять новых туды
+                if (response != null) {
+                    boolean newUser = response.isNewUser();
+                }
                 // Successfully signed in
                 // ...
             } else {

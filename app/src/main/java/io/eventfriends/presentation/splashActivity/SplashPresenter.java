@@ -1,6 +1,7 @@
 package io.eventfriends.presentation.splashActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -124,6 +125,7 @@ public class SplashPresenter {
 
     public void updateUi(){
         mView.startMainActivity();
+
     }
 
 }

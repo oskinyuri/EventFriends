@@ -10,4 +10,12 @@
     <string name="message">Message</string>
     <string name="more">More</string>
     <string name="hide">Hide</string>
+    <string name="set_data">Set data</string>
+    <string name="set_time">Set time</string>
+    <string name="set_location">Set location</string>
+    <string name="add_location">Add location</string>
+    <string name="add_event_link">Add event link</string>
+    <string name="link_for_feedback_with_you">Link for feedback with you</string>
+    <string name="additional_info">Additional info</string>
+    <string name="create_btn">Create</string>
 </resources>

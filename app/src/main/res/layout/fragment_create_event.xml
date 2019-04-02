@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/create_event_date_image_view"
@@ -22,11 +23,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/create_event_date_edit_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="347dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toTopOf="@+id/create_event_time_edit_layout"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/create_event_date_image_view"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="spread_inside">
@@ -54,19 +57,21 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/create_event_time_edit_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="347dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toTopOf="@+id/create_event_location_edit_layout"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/create_event_time_image_view"
             app:layout_constraintTop_toBottomOf="@+id/create_event_date_edit_layout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/create_event_time_edit_text"
-                android:hint="@string/set_time"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:hint="@string/set_time" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,11 +88,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/create_event_location_edit_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="347dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toTopOf="@+id/create_event_event_link_edit_layout"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/create_event_location_image_view"
             app:layout_constraintTop_toBottomOf="@+id/create_event_time_edit_layout">
 
@@ -95,7 +102,7 @@
                 android:id="@+id/create_event_location_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/add_location"/>
+                android:hint="@string/add_location" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -112,11 +119,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/create_event_event_link_edit_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="347dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toTopOf="@+id/create_event_event_type_layout"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/create_event_event_link_image_view"
             app:layout_constraintTop_toBottomOf="@+id/create_event_location_edit_layout">
 
@@ -124,7 +133,7 @@
                 android:id="@+id/create_event_time_event_link_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/add_event_link"/>
+                android:hint="@string/add_event_link" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -141,21 +150,24 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/create_event_event_type_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="347dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toTopOf="@+id/create_event_person_link_edit_layout"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/create_event_type_view"
             app:layout_constraintTop_toBottomOf="@+id/create_event_event_link_edit_layout">
 
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/create_event_type_edit_text"
+            <com.weiwangcn.betterspinner.library.BetterSpinner
+                android:id="@+id/create_event_type_dropdown_menu"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </com.google.android.material.textfield.TextInputEditText>
+                android:layout_height="56dp"
+                android:hint="@string/event_type"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -172,19 +184,21 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/create_event_person_link_edit_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="347dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toTopOf="@+id/create_event_additional_info_edit_layout"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/create_event_person_link_image_view"
             app:layout_constraintTop_toBottomOf="@+id/create_event_event_type_layout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/create_event_person_link_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/link_for_feedback_with_you"/>
+                android:layout_height="match_parent"
+                android:hint="@string/link_for_feedback_with_you" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -203,23 +217,40 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/create_event_additional_info_edit_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="347dp"
-            android:layout_height="168dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/create_event_create_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_min="72dp"
             app:layout_constraintStart_toEndOf="@+id/create_event_additional_info_image_view"
             app:layout_constraintTop_toBottomOf="@+id/create_event_person_link_edit_layout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/create_event_additional_info_edit_text"
-                android:hint="@string/additional_info"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="top" />
+                android:gravity="top"
+                android:hint="@string/additional_info" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/create_event_create_btn"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/create_btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
