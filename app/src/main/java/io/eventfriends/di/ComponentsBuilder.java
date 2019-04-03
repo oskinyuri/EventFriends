@@ -3,7 +3,9 @@ package io.eventfriends.di;
 import android.content.Context;
 
 import io.eventfriends.di.components.AppComponent;
+import io.eventfriends.di.components.CreateEventComponent;
 import io.eventfriends.di.components.DaggerAppComponent;
+import io.eventfriends.di.components.DaggerCreateEventComponent;
 import io.eventfriends.di.components.DaggerEventListComponent;
 import io.eventfriends.di.components.DaggerMainComponent;
 import io.eventfriends.di.components.DaggerSplashComponent;
@@ -41,6 +43,12 @@ public class ComponentsBuilder {
 
     public EventListComponent getEventListComponent(){
         return DaggerEventListComponent.builder()
+                .appComponent(getAppComponent())
+                .build();
+    }
+
+    public CreateEventComponent getCreateEventComponent(){
+        return DaggerCreateEventComponent.builder()
                 .appComponent(getAppComponent())
                 .build();
     }

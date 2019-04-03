@@ -10,7 +10,7 @@
     <string name="message">Message</string>
     <string name="more">More</string>
     <string name="hide">Hide</string>
-    <string name="set_data">Set data</string>
+    <string name="set_date">Set date</string>
     <string name="set_time">Set time</string>
     <string name="set_location">Set location</string>
     <string name="add_location">Add location</string>
