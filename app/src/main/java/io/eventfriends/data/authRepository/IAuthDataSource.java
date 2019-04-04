@@ -1,4 +1,4 @@
-package io.eventfriends.domain;
+package io.eventfriends.data.authRepository;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -8,8 +8,7 @@ import java.util.List;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
-public interface IAuthRepository {
-
+public interface IAuthDataSource {
     Single<FirebaseAuth> getFirebaseAuthInstance();
 
     Single<AuthUI> getAuthUIInstance();

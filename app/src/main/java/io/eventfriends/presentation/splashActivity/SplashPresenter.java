@@ -1,15 +1,12 @@
 package io.eventfriends.presentation.splashActivity;
 
 import android.content.Intent;
-import android.net.Uri;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import io.eventfriends.domain.AuthInteractor;
-import io.eventfriends.presentation.main.MainView;
+import io.eventfriends.domain.interactors.AuthInteractor;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

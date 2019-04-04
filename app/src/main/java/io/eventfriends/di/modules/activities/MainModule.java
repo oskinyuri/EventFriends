@@ -3,7 +3,7 @@ package io.eventfriends.di.modules.activities;
 import dagger.Module;
 import dagger.Provides;
 import io.eventfriends.di.scopes.MainScope;
-import io.eventfriends.domain.AuthInteractor;
+import io.eventfriends.domain.interactors.AuthInteractor;
 import io.eventfriends.presentation.main.MainPresenter;
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -22,6 +22,5 @@ public class MainModule {
                                             CompositeDisposable compositeDisposable) {
         return new MainPresenter(authInteractor, compositeDisposable);
     }
-
 }
 

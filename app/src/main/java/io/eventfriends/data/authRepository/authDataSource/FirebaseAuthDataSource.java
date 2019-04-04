@@ -1,4 +1,4 @@
-package io.eventfriends.data.AuthRepository.AuthDataSource;
+package io.eventfriends.data.authRepository.authDataSource;
 
 import android.content.Context;
 
@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Arrays;
 import java.util.List;
 
-import io.eventfriends.data.AuthRepository.IAuthDataSource;
+import io.eventfriends.data.authRepository.IAuthDataSource;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 

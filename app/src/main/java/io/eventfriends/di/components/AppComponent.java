@@ -1,20 +1,32 @@
 package io.eventfriends.di.components;
 
+import android.content.Context;
+
+import java.util.concurrent.ExecutorService;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
 import io.eventfriends.EventFriendsApp;
+import io.eventfriends.di.modules.app.AppModule;
 import io.eventfriends.di.modules.app.AuthModule;
 import io.eventfriends.di.modules.app.ContextModule;
-import io.eventfriends.domain.AuthInteractor;
+import io.eventfriends.di.qualifiers.ApplicationContext;
+import io.eventfriends.domain.interactors.AuthInteractor;
 
 @Component(modules = {
         ContextModule.class,
-        AuthModule.class})
+        AuthModule.class,
+        AppModule.class})
 @Singleton
 public interface AppComponent {
 
     AuthInteractor getAuthInteractor();
+
+    @ApplicationContext
+    Context getContext();
+
+    ExecutorService getExecutorService();
 
     void injectApp(EventFriendsApp eventFriendsApp);
 

@@ -7,19 +7,35 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.button.MaterialButton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.paging.PagedList;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import io.eventfriends.R;
+import io.eventfriends.domain.entity.Event;
+import io.eventfriends.domain.entity.User;
 
-public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventHolder> {
+public class EventListAdapter extends PagedListAdapter<Event, EventListAdapter.EventHolder> {
 
     private int[] mData;
 
-    public EventListAdapter(int[] data) {
-        mData = data;
+    public EventListAdapter() {
+        super(Event.DIFF_CALLBACK);
     }
+
+    public void submitList(@Nullable PagedList<Event> pagedList) {
+        super.submitList(pagedList);
+    }
+
+    /*public EventListAdapter(int[] data) {
+        mData = data;
+    }*/
 
     @NonNull
     @Override
@@ -31,12 +47,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
 
     @Override
     public void onBindViewHolder(@NonNull EventHolder holder, int position) {
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return mData.length;
+        holder.bindOn(getItem(position));
     }
 
     public class EventHolder extends RecyclerView.ViewHolder {
@@ -65,6 +76,23 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             likeBtn = itemView.findViewById(R.id.event_item_like_btn);
 
             profilePhoto = itemView.findViewById(R.id.event_item_profile_photo);
+        }
+
+        public void bindOn(Event event){
+            eventType.setText(event.getEventType());
+            eventTitle.setText(event.getTitleEvent());
+            eventText.setText(event.getAdditionalInfo());
+
+            if (!event.getUserPhotoUrl().equals(User.DEFAULT_PROFLIE_IMG)){
+                Glide.with(itemView.getContext())
+                        .load(event.getUserPhotoUrl())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(profilePhoto);
+            } else {
+                Glide.with(itemView.getContext())
+                        .load(R.drawable.default_user_image)
+                        .into(profilePhoto);
+            }
         }
     }
 }

@@ -5,7 +5,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import io.eventfriends.domain.AuthInteractor;
+import java.util.Calendar;
+
+import io.eventfriends.domain.interactors.AuthInteractor;
 import io.eventfriends.domain.entity.Event;
 import io.eventfriends.domain.entity.User;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -59,12 +61,23 @@ public class CreateEventPresenter {
     public void setEvent(Event event) {
         mEvent = event;
 
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference eventsRef = database.getReference("Events");
+
+        // Generate firebase unique id
+        String uniqueId = eventsRef.push().getKey();
+        // Set firebase generated if
+        mEvent.setUniqueId(uniqueId);
+
+        // Set info about user
         mEvent.setUserId(mFirebaseUser.getUid());
         mEvent.setUserName(mFirebaseUser.getDisplayName());
         mEvent.setUserPhotoUrl(mFirebaseUser.getPhotoUrl() != null ? mFirebaseUser.getPhotoUrl().toString() : User.DEFAULT_PROFLIE_IMG);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference eventsRef = database.getReference("Events");
-        eventsRef.push().setValue(mEvent);
+        // Set timestamp
+        mEvent.setTimestamp(String.valueOf(Calendar.getInstance().getTimeInMillis()));
+
+        if (uniqueId != null)
+        eventsRef.child(uniqueId).setValue(mEvent);
     }
 }

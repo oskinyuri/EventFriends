@@ -1,34 +1,75 @@
 package io.eventfriends.presentation.eventList;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.paging.PagedList;
+import androidx.paging.RxPagedListBuilder;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.eventfriends.EventFriendsApp;
 import io.eventfriends.R;
+import io.eventfriends.data.eventsRepository.eventsDataSource.EventsRemoteDataFactory;
 import io.eventfriends.di.components.EventListComponent;
+import io.eventfriends.domain.entity.Event;
+import io.eventfriends.domain.entity.User;
 import io.eventfriends.presentation.splashActivity.SplashScreen;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 
 
 public class EventsListFragment extends Fragment implements EventListView {
 
     //test
+    List<Event> mData;
+    final String[] lastKey = new String[1];
+    ExecutorService mExecutorService;
+    EventsRemoteDataFactory mDataFactory;
+
+
+    private CompositeDisposable disposable = new CompositeDisposable();
+    Observable<PagedList<Event>> mRxData;
+    Observable<PagedList<Event>> mSubject = PublishSubject.create();
+    LiveData<PagedList<Event>> mLiveData;
+
+
+    private ProgressBar mProgressBar;
     private RecyclerView mRecyclerView;
     private EventListAdapter mListAdapter;
     private FloatingActionButton mFabButton;
@@ -44,7 +85,11 @@ public class EventsListFragment extends Fragment implements EventListView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mNavController = Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.main_host_fragment);
+
         setHasOptionsMenu(true);
+
+        //Dagger
         EventListComponent component = EventFriendsApp.getInstance().getComponentsBuilder().getEventListComponent();
         component.injectEventList(this);
     }
@@ -54,100 +99,126 @@ public class EventsListFragment extends Fragment implements EventListView {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_events_list, container, false);
 
+        mProgressBar = view.findViewById(R.id.progressBar);
+
+        //init Recycler
         mRecyclerView = view.findViewById(R.id.event_list_recycler);
         RecyclerView.LayoutManager linearLayout = new LinearLayoutManager(container.getContext());
         mRecyclerView.setLayoutManager(linearLayout);
-
-        int[] data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2};
-
-        mListAdapter = new EventListAdapter(data);
+        mListAdapter = new EventListAdapter();
         mRecyclerView.setAdapter(mListAdapter);
-
-        mNavController = Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.main_host_fragment);
 
         mFabButton = view.findViewById(R.id.list_events_bottom_fab);
         mFabButton.setOnClickListener((v) -> {
 
-            /*FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference eventsRef = database.getReference("Events");
-            HashMap<String, String> event = new HashMap<>();
-            event.put("data", "01.04.2019");
-            event.put("userId", user.getUid());
-            event.put("userName", "Chris Prat");
-            event.put("eventType", "Cinema");
-            eventsRef.push().setValue(event);
-
-            HashMap<String, String> event2 = new HashMap<>();
-            event2.put("data", "01.05.2012");
-            event2.put("userId", user.getUid());
-            event2.put("userName", "Tony Stark");
-            event2.put("eventType", "Theater");
-            eventsRef.push().setValue(event2);
-
-            HashMap<String, String> event3 = new HashMap<>();
-            event3.put("data", "01.05.2020");
-            event3.put("userId", user.getUid());
-            event3.put("userName", "Tony Stark");
-            event3.put("eventType", "Concert");
-            eventsRef.push().setValue(event3);
-
-            List<Event> eventList = new ArrayList<>();
-            Query newQuery = eventsRef.orderByChild("userName").equalTo("Tony Stark");
-            newQuery.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
-                    {
-                        Event event1 = postSnapshot.getValue(Event.class);
-                        eventList.add(event1);
-                    }
-                    Log.d("EventList", eventList.toString());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
-            Log.d("EventList", eventList.toString());
-
-
-            DatabaseReference usersRef = database.getReference("Users");
-            HashMap<String, String> newUser = new HashMap<>();
-            newUser.put("id", user.getUid());
-            newUser.put("imgUrl", (user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : "default" ));
-            newUser.put("name", user.getDisplayName());
-            usersRef.setValue(newUser);*/
-
-
-            mNavController.navigate(R.id.action_eventsListFragment_to_createEventFragment);
+            mPresenter.loadEventsFormWeb();
+            //mNavController.navigate(R.id.action_eventsListFragment_to_createEventFragment);
         });
         return view;
     }
+
+    //Yet need for tests
+    private void loadInDBItemsTestMethod() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference eventsRef = database.getReference("Events");
+        for (int i = 0; i < 50; i++) {
+            Event mEvent = new Event();
+            mEvent.setTitleEvent("item " + String.valueOf(i));
+            mEvent.setDateEvent("item " + String.valueOf(i));
+            mEvent.setTimeEvent("item " + String.valueOf(i));
+            mEvent.setLocationEvent("item " + String.valueOf(i));
+            mEvent.setEventLink("item " + String.valueOf(i));
+            mEvent.setEventType("item " + String.valueOf(i));
+            mEvent.setUserFeedbackLink("item " + String.valueOf(i));
+            mEvent.setAdditionalInfo("item " + String.valueOf(i));
+
+            String uniqueId = eventsRef.push().getKey();
+            // Set firebase generated if
+            mEvent.setUniqueId(uniqueId);
+
+            // Set info about user
+            mEvent.setUserId("item " + String.valueOf(i));
+            mEvent.setUserName("item " + String.valueOf(i));
+            mEvent.setUserPhotoUrl(User.DEFAULT_PROFLIE_IMG);
+
+            // Set timestamp
+            mEvent.setTimestamp(String.valueOf(Calendar.getInstance().getTimeInMillis()));
+
+            if (uniqueId != null)
+                eventsRef.child(uniqueId).setValue(mEvent);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        //test
+        /*mDataFactory = new EventsRemoteDataFactory();
+        mExecutorService = Executors.newSingleThreadScheduledExecutor();
+        PagedList.Config pagedListConfig = (new PagedList.Config.Builder())
+                .setEnablePlaceholders(true)
+                .setInitialLoadSizeHint(15)
+                .setPageSize(10)
+                .build();
+
+        mLiveData = new LivePagedListBuilder(mDataFactory, pagedListConfig)
+                .setFetchExecutor(mExecutorService)
+                .build();
+        mLiveData.observe(this, events -> mListAdapter.submitList(events));
+
+
+
+        mRxData = new RxPagedListBuilder(mDataFactory, pagedListConfig)
+                .setFetchScheduler(Schedulers.io())
+                .buildObservable();
+        disposable.add(mRxData.subscribe(mListAdapter::submitList));
+
+        disposable.add(getRxData()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(mListAdapter::submitList));*/
+
+
+    }
+
+    @SuppressWarnings("unchecked")
+    /*private Observable<PagedList<Event>> getRxData() {
+
+        PagedList.Config pagedListConfig = (new PagedList.Config.Builder())
+                .setEnablePlaceholders(true)
+                .setInitialLoadSizeHint(15)
+                .setPageSize(10)
+                .build();
+
+        return new RxPagedListBuilder(mDataFactory, pagedListConfig)
+                .buildObservable().startWith(new RxPagedListBuilder(mDataFactory, pagedListConfig)
+                        .buildObservable());
+    }*/
 
     @Override
     public void onResume() {
         super.onResume();
         mPresenter.onAttach(this);
+        //mPresenter.loadEvents();
+
     }
 
     @Override
-    public void updateList() {
-
+    public void updateList(PagedList<Event> eventList) {
+        hideProgress();
+        mListAdapter.submitList(eventList);
     }
 
     @Override
     public void showProgress() {
-
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -173,6 +244,10 @@ public class EventsListFragment extends Fragment implements EventListView {
 
     @Override
     public void onPause() {
+
+        //Test delete
+        disposable.clear();
+
         mPresenter.onDetach();
         super.onPause();
     }

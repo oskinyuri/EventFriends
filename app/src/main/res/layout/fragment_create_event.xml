@@ -12,6 +12,38 @@
         android:id="@+id/create_event_layout">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/create_event_title_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_title_black_24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/create_event_title_edit_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/create_event_title_edit_layout" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/create_event_title_edit_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/create_event_person_link_image_view"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/create_event_title_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/event_title"
+                android:inputType="textUri"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/create_event_date_image_view"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -32,7 +64,7 @@
             app:layout_constraintBottom_toTopOf="@+id/create_event_time_edit_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/create_event_date_image_view"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_title_edit_layout"
             app:layout_constraintVertical_chainStyle="spread_inside">
 
             <com.google.android.material.textfield.TextInputEditText

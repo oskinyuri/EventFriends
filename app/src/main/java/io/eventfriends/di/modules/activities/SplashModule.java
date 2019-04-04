@@ -3,7 +3,7 @@ package io.eventfriends.di.modules.activities;
 import dagger.Module;
 import dagger.Provides;
 import io.eventfriends.di.scopes.SplashScope;
-import io.eventfriends.domain.AuthInteractor;
+import io.eventfriends.domain.interactors.AuthInteractor;
 import io.eventfriends.presentation.splashActivity.SplashPresenter;
 import io.reactivex.disposables.CompositeDisposable;
 

@@ -12,6 +12,8 @@ import android.widget.EditText;
 import com.google.android.material.button.MaterialButton;
 import com.weiwangcn.betterspinner.library.BetterSpinner;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -30,7 +32,6 @@ import io.eventfriends.domain.entity.Event;
 public class CreateEventFragment extends Fragment implements CreateEventView {
 
 
-
     NavController navController;
 
     @Inject
@@ -38,12 +39,14 @@ public class CreateEventFragment extends Fragment implements CreateEventView {
 
     private ConstraintLayout mCreateEventLayout;
 
+    private EditText mTitleET;
     private EditText mDateET;
     private EditText mTimeED;
     private EditText mLocationET;
     private EditText mEventLinkET;
     private EditText mFeedbackET;
     private EditText mAdditionalInfoED;
+    private List<EditText> mEditTexts;
 
     private BetterSpinner mEventTypeSpinner;
 
@@ -73,19 +76,37 @@ public class CreateEventFragment extends Fragment implements CreateEventView {
 
     private void initViews(View view) {
         mCreateEventLayout = view.findViewById(R.id.create_event_layout);
+        mEditTexts = new ArrayList<>();
         //init edit texts
+
+        mTitleET = view.findViewById(R.id.create_event_title_edit_text);
+        mEditTexts.add(mTitleET);
+
         mDateET = view.findViewById(R.id.create_event_date_edit_text);
+        mEditTexts.add(mDateET);
+
         mTimeED = view.findViewById(R.id.create_event_time_edit_text);
+        mEditTexts.add(mTimeED);
+
         mLocationET = view.findViewById(R.id.create_event_location_edit_text);
+        mEditTexts.add(mLocationET);
+
         mEventLinkET = view.findViewById(R.id.create_event_event_link_edit_text);
+        mEditTexts.add(mEventLinkET);
+
         mFeedbackET = view.findViewById(R.id.create_event_person_link_edit_text);
+        mEditTexts.add(mFeedbackET);
+
         mAdditionalInfoED = view.findViewById(R.id.create_event_additional_info_edit_text);
+        mEditTexts.add(mAdditionalInfoED);
 
         //init btn
         mCreateBtn = view.findViewById(R.id.create_event_create_btn);
 
         //init spinner
         mEventTypeSpinner = view.findViewById(R.id.create_event_type_spinner);
+        mEditTexts.add(mEventTypeSpinner);
+
         String[] eventTypes = getResources().getStringArray(R.array.event_types);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(Objects.requireNonNull(getContext()),
                 android.R.layout.simple_dropdown_item_1line, eventTypes);
@@ -126,8 +147,9 @@ public class CreateEventFragment extends Fragment implements CreateEventView {
 
         mCreateBtn.setOnClickListener(v -> {
 
-            if(!hasEmptyFields(mCreateEventLayout)){
+            if (!hasEmptyFields()) {
                 mEvent = new Event();
+                mEvent.setTitleEvent(mTitleET.getText().toString());
                 mEvent.setDateEvent(mDateET.getText().toString());
                 mEvent.setTimeEvent(mTimeED.getText().toString());
                 mEvent.setLocationEvent(mLocationET.getText().toString());
@@ -148,22 +170,13 @@ public class CreateEventFragment extends Fragment implements CreateEventView {
         super.onPause();
     }
 
-    /**
-     * Проходим по всем edit text и проверяем на пустоту
-     *
-     * @param viewGroup - корневая viewGroup
-     */
-    private boolean hasEmptyFields(ViewGroup viewGroup) {
+    private boolean hasEmptyFields() {
         boolean hasError = false;
-        for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            View child = viewGroup.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                hasEmptyFields((ViewGroup) child);
-            }  else if (child instanceof EditText) {
-                if (((EditText) child).getText().toString().trim().equalsIgnoreCase("")) {
-                    ((EditText) child).setError("This field can not be blank");
-                    hasError = true;
-                }
+
+        for (EditText editText : mEditTexts) {
+            if (editText.getText().toString().trim().equalsIgnoreCase("")) {
+                editText.setError("This field can not be blank");
+                hasError = true;
             }
         }
         return hasError;

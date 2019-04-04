@@ -6,12 +6,12 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.eventfriends.data.AuthRepository.AuthDataSource.FirebaseAuthDataSource;
-import io.eventfriends.data.AuthRepository.AuthRepository;
-import io.eventfriends.data.AuthRepository.IAuthDataSource;
+import io.eventfriends.data.authRepository.authDataSource.FirebaseAuthDataSource;
+import io.eventfriends.data.authRepository.AuthRepository;
+import io.eventfriends.data.authRepository.IAuthDataSource;
 import io.eventfriends.di.qualifiers.ApplicationContext;
-import io.eventfriends.domain.AuthInteractor;
-import io.eventfriends.domain.IAuthRepository;
+import io.eventfriends.domain.interactors.AuthInteractor;
+import io.eventfriends.domain.repositories.IAuthRepository;
 
 @Module
 public class AuthModule {
