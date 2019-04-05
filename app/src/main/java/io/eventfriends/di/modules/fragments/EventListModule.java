@@ -9,17 +9,26 @@ import dagger.Module;
 import dagger.Provides;
 import io.eventfriends.data.eventsRepository.EventsRepository;
 import io.eventfriends.data.eventsRepository.eventsDataSource.EventsLocalDataSource;
+import io.eventfriends.data.eventsRepository.eventsDataSource.EventsPositionDataSource;
 import io.eventfriends.data.eventsRepository.eventsDataSource.EventsRemoteDataFactory;
 import io.eventfriends.di.qualifiers.ApplicationContext;
+import io.eventfriends.di.qualifiers.EventListContext;
 import io.eventfriends.di.scopes.EventListScope;
 import io.eventfriends.domain.interactors.AuthInteractor;
 import io.eventfriends.domain.interactors.LoadEventsInteractor;
 import io.eventfriends.domain.repositories.IEventsRepository;
 import io.eventfriends.presentation.eventList.EventListPresenter;
+import io.eventfriends.util.ConnectionObservable;
 import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 public class EventListModule {
+
+    Context mContext;
+
+    public EventListModule(Context context){
+        mContext = context;
+    }
 
     @EventListScope
     @Provides
@@ -29,10 +38,24 @@ public class EventListModule {
 
     @EventListScope
     @Provides
+    @EventListContext
+    public Context getContext(){
+        return mContext;
+    }
+
+    @EventListScope
+    @Provides
+    public ConnectionObservable getConnectionObservable(@EventListContext Context context){
+        return new ConnectionObservable(context);
+    }
+
+    @EventListScope
+    @Provides
     public EventListPresenter getEventListPresenter(AuthInteractor authInteractor,
                                                     CompositeDisposable compositeDisposable,
-                                                    LoadEventsInteractor loadEventsInteractor) {
-        return new EventListPresenter(authInteractor, compositeDisposable, loadEventsInteractor);
+                                                    LoadEventsInteractor loadEventsInteractor,
+                                                    @EventListContext Context context) {
+        return new EventListPresenter(authInteractor, compositeDisposable, loadEventsInteractor, context);
     }
 
     @EventListScope
@@ -63,6 +86,12 @@ public class EventListModule {
     @Provides
     public EventsRemoteDataFactory getEventsRemoteDataFactory(EventsLocalDataSource eventsLocalDataSource, ExecutorService executorService){
         return new EventsRemoteDataFactory(eventsLocalDataSource, executorService);
+    }
+
+    @EventListScope
+    @Provides
+    public EventsPositionDataSource getEventsPositionDataSource(EventsLocalDataSource eventsLocalDataSource, ExecutorService executorService){
+        return new EventsPositionDataSource(eventsLocalDataSource, executorService);
     }
 
     @EventListScope

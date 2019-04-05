@@ -13,6 +13,7 @@ import io.eventfriends.di.components.EventListComponent;
 import io.eventfriends.di.components.MainComponent;
 import io.eventfriends.di.components.SplashComponent;
 import io.eventfriends.di.modules.app.ContextModule;
+import io.eventfriends.di.modules.fragments.EventListModule;
 
 public class ComponentsBuilder {
 
@@ -41,9 +42,10 @@ public class ComponentsBuilder {
                 .build();
     }
 
-    public EventListComponent getEventListComponent(){
+    public EventListComponent getEventListComponent(Context context){
         return DaggerEventListComponent.builder()
                 .appComponent(getAppComponent())
+                .eventListModule(new EventListModule(context))
                 .build();
     }
 

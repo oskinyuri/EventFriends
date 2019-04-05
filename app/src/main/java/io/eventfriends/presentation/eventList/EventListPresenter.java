@@ -1,10 +1,14 @@
 package io.eventfriends.presentation.eventList;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+import io.eventfriends.domain.entity.Event;
 import io.eventfriends.domain.interactors.AuthInteractor;
 import io.eventfriends.domain.interactors.LoadEventsInteractor;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -21,15 +25,18 @@ public class EventListPresenter {
     private AuthInteractor mAuthInteractor;
     private CompositeDisposable mCompositeDisposable;
     private LoadEventsInteractor mEventsInteractor;
+    private Context mContext;
 
     public EventListPresenter(AuthInteractor authInteractor,
                               CompositeDisposable compositeDisposable,
-                              LoadEventsInteractor loadEventsInteractor
+                              LoadEventsInteractor loadEventsInteractor,
+                              Context context
     ) {
 
         mAuthInteractor = authInteractor;
         mCompositeDisposable = compositeDisposable;
         mEventsInteractor = loadEventsInteractor;
+        mContext = context;
     }
 
     public void onAttach(EventListView view) {
@@ -63,7 +70,12 @@ public class EventListPresenter {
                 }));
     }
 
-    public void loadEvents() {
+    public LiveData<PagedList<Event>> loadEvents() {
+        mView.showProgress();
+        return mEventsInteractor.getEvents();
+    }
+
+    public void loadEventsFromBD() {
         mView.showProgress();
         mCompositeDisposable.add(mEventsInteractor.getEventsPagedListFromDB()
                 .subscribeOn(Schedulers.io())
@@ -71,17 +83,6 @@ public class EventListPresenter {
                 .subscribe(eventList -> {
                     mView.updateList(eventList);
                 }));
-
-        Log.d("sdf","sdfsdf");
-
-
-
-
-
-        /*mCompositeDisposable.add(mEventsInteractor.getEventsPagedList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mView::updateList));*/
     }
 
     public void loadEventsFormWeb(){
@@ -94,6 +95,13 @@ public class EventListPresenter {
                     Log.d("new data", "new data");
                     mView.updateList(eventList);
                 }));
+    }
+
+    public void updateEventsList(){
+        mEventsInteractor.updateEventsList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 
 }

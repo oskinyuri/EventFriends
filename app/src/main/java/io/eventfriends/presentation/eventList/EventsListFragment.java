@@ -11,23 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -37,7 +27,6 @@ import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.paging.PagedList;
-import androidx.paging.RxPagedListBuilder;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.eventfriends.EventFriendsApp;
@@ -48,9 +37,7 @@ import io.eventfriends.domain.entity.Event;
 import io.eventfriends.domain.entity.User;
 import io.eventfriends.presentation.splashActivity.SplashScreen;
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 
@@ -90,7 +77,7 @@ public class EventsListFragment extends Fragment implements EventListView {
         setHasOptionsMenu(true);
 
         //Dagger
-        EventListComponent component = EventFriendsApp.getInstance().getComponentsBuilder().getEventListComponent();
+        EventListComponent component = EventFriendsApp.getInstance().getComponentsBuilder().getEventListComponent(getContext());
         component.injectEventList(this);
     }
 
@@ -106,13 +93,13 @@ public class EventsListFragment extends Fragment implements EventListView {
         RecyclerView.LayoutManager linearLayout = new LinearLayoutManager(container.getContext());
         mRecyclerView.setLayoutManager(linearLayout);
         mListAdapter = new EventListAdapter();
-        mRecyclerView.setAdapter(mListAdapter);
+        //mRecyclerView.setAdapter(mListAdapter);
 
         mFabButton = view.findViewById(R.id.list_events_bottom_fab);
         mFabButton.setOnClickListener((v) -> {
 
-            mPresenter.loadEventsFormWeb();
-            //mNavController.navigate(R.id.action_eventsListFragment_to_createEventFragment);
+            //mPresenter.loadEventsFormWeb();
+            mNavController.navigate(R.id.action_eventsListFragment_to_createEventFragment);
         });
         return view;
     }
@@ -201,13 +188,54 @@ public class EventsListFragment extends Fragment implements EventListView {
     public void onResume() {
         super.onResume();
         mPresenter.onAttach(this);
-        //mPresenter.loadEvents();
+       /* ConnectionObservable connectionObservable = new ConnectionObservable(getContext());
+
+        Disposable disposable = connectionObservable.subscribe(connection -> {
+            if (connection.getIsConnected()) {
+                switch (connection.getType()) {
+                    case ConnectionModel.WIFI_DATA:
+                        hideProgress();
+                        break;
+                    case ConnectionModel.MOBILE_DATA:
+                        hideProgress();
+                        break;
+                }
+            } else {
+                showProgress();
+            }
+        });*/
+
+        /*connectionObservable.observe(this, new Observer<ConnectionModel>() {
+            @Override
+            public void onChanged(ConnectionModel connection) {
+                if (connection.getIsConnected()) {
+                    switch (connection.getType()) {
+                        case ConnectionModel.WIFI_DATA:
+                            hideProgress();
+                            break;
+                        case ConnectionModel.MOBILE_DATA:
+                            hideProgress();
+                            break;
+                    }
+                } else {
+                    showProgress();
+                }
+            }
+        });*/
+
+        //TODO Убрать прям ща комент
+        LiveData<PagedList<Event>> liveData = mPresenter.loadEvents();
+        liveData.observe(this, pagedList -> {
+            mListAdapter.submitList(pagedList);
+        });
+        mRecyclerView.setAdapter(mListAdapter);
+        mPresenter.updateEventsList();
+
 
     }
 
     @Override
     public void updateList(PagedList<Event> eventList) {
-        hideProgress();
         mListAdapter.submitList(eventList);
     }
 

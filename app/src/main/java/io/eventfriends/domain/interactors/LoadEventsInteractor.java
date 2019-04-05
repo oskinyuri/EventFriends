@@ -1,8 +1,10 @@
 package io.eventfriends.domain.interactors;
 
+import androidx.lifecycle.LiveData;
 import androidx.paging.PagedList;
 import io.eventfriends.domain.entity.Event;
 import io.eventfriends.domain.repositories.IEventsRepository;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 
 public class LoadEventsInteractor {
@@ -23,5 +25,13 @@ public class LoadEventsInteractor {
 
     public Observable<PagedList<Event>> getEventsPagedListFromWeb(){
         return mEventsRepository.getEventListFromWeb();
+    }
+
+    public LiveData<PagedList<Event>> getEvents(){
+        return mEventsRepository.getEvents();
+    }
+
+    public Completable updateEventsList(){
+        return mEventsRepository.updateEventsList();
     }
 }

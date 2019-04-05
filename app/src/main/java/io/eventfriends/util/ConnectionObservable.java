@@ -8,26 +8,19 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import androidx.lifecycle.LiveData;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 
-public class ConnectionLiveData extends LiveData<ConnectionModel> {
+public class ConnectionObservable extends Observable<ConnectionModel> {
 
     private Context context;
+    private Observer<? super ConnectionModel> mObserver;
+    private ConnectionObservable mConnectionObservable;
 
-    public ConnectionLiveData(Context context) {
+    public ConnectionObservable(Context context) {
         this.context = context;
-    }
-
-    @Override
-    protected void onActive() {
-        super.onActive();
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         context.registerReceiver(networkReceiver, filter);
-    }
-
-    @Override
-    protected void onInactive() {
-        super.onInactive();
-        context.unregisterReceiver(networkReceiver);
     }
 
     private BroadcastReceiver networkReceiver = new BroadcastReceiver() {
@@ -41,16 +34,29 @@ public class ConnectionLiveData extends LiveData<ConnectionModel> {
                 if(isConnected) {
                     switch (activeNetwork.getType()){
                         case ConnectivityManager.TYPE_WIFI:
-                            postValue(new ConnectionModel(ConnectionModel.WIFI_DATA,true));
+                            mObserver.onNext(new ConnectionModel(ConnectionModel.WIFI_DATA,true));
                             break;
                         case ConnectivityManager.TYPE_MOBILE:
-                            postValue(new ConnectionModel(ConnectionModel.MOBILE_DATA,true));
+                            mObserver.onNext(new ConnectionModel(ConnectionModel.MOBILE_DATA,true));
                             break;
                     }
                 } else {
-                    postValue(new ConnectionModel(0,false));
+                    mObserver.onNext(new ConnectionModel(0,false));
                 }
             }
         }
     };
+
+    @Override
+    protected void subscribeActual(Observer<? super ConnectionModel> observer) {
+        mObserver = observer;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        context.unregisterReceiver(networkReceiver);
+        super.finalize();
+    }
+
+
 }

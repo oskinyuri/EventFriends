@@ -13,25 +13,22 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import androidx.annotation.NonNull;
-import androidx.paging.ItemKeyedDataSource;
-import androidx.room.Database;
+import androidx.paging.PositionalDataSource;
 import io.eventfriends.domain.entity.Event;
 
-public class EventsRemoteDataSource extends ItemKeyedDataSource<String, Event> {
+public class EventsPositionDataSource extends PositionalDataSource<Event> {
 
     private EventsLocalDataSource mLocalDataSource;
     private ExecutorService mExecutorService;
+    private String lastKey;
 
-    public EventsRemoteDataSource(EventsLocalDataSource localDataSource,
-                                  ExecutorService executorService) {
+    public EventsPositionDataSource(EventsLocalDataSource localDataSource, ExecutorService executorService) {
         mLocalDataSource = localDataSource;
         mExecutorService = executorService;
     }
 
     @Override
-    public void loadInitial(@NonNull LoadInitialParams<String> params, @NonNull LoadInitialCallback<Event> callback) {
-
-
+    public void loadInitial(@NonNull LoadInitialParams params, @NonNull LoadInitialCallback<Event> callback) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Events");
         Query newQuery = reference.orderByKey().limitToLast(params.requestedLoadSize);
         newQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -45,22 +42,22 @@ public class EventsRemoteDataSource extends ItemKeyedDataSource<String, Event> {
                 }
 
                 Collections.reverse(mTempData);
+                lastKey = mTempData.get(mTempData.size()-1).getUniqueId();
                 mExecutorService.execute(() -> mLocalDataSource.addEvents(mTempData));
-                callback.onResult(mTempData);
+                callback.onResult(mTempData, mTempData.size()-1);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                callback.onResult(new ArrayList<>());
+
             }
         });
-
     }
 
     @Override
-    public void loadAfter(@NonNull LoadParams<String> params, @NonNull LoadCallback<Event> callback) {
+    public void loadRange(@NonNull LoadRangeParams params, @NonNull LoadRangeCallback<Event> callback) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Events");
-        Query newQuery = reference.orderByKey().endAt(params.key).limitToLast(params.requestedLoadSize);
+        Query newQuery = reference.orderByKey().endAt(lastKey).limitToLast(params.loadSize);
         newQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -69,11 +66,12 @@ public class EventsRemoteDataSource extends ItemKeyedDataSource<String, Event> {
                 {
                     Event item = postSnapshot.getValue(Event.class);
                     if (item != null) {
-                        if (!item.getUniqueId().equals(params.key))
+                        if (!item.getUniqueId().equals(lastKey))
                             mTempData.add(item);
                     }
                 }
                 Collections.reverse(mTempData);
+                lastKey = mTempData.get(mTempData.size()-1).getUniqueId();
                 callback.onResult(mTempData);
             }
 
@@ -82,16 +80,5 @@ public class EventsRemoteDataSource extends ItemKeyedDataSource<String, Event> {
 
             }
         });
-    }
-
-    @Override
-    public void loadBefore(@NonNull LoadParams<String> params, @NonNull LoadCallback<Event> callback) {
-
-    }
-
-    @NonNull
-    @Override
-    public String getKey(@NonNull Event item) {
-        return item.getUniqueId();
     }
 }
