@@ -22,12 +22,15 @@ public class EventsLocalDataSource {
     }
 
     public void addEvents(List<Event> eventList){
-        mEventsDB.getEventsDAO().deleteAllEvents();
         mEventsDB.getEventsDAO().addEvents(eventList);
     }
 
     public DataSource.Factory<Integer, Event> getEvents(){
         return mEventsDB.getEventsDAO().getPagedList();
+    }
+
+    public void deleteAll(){
+        mEventsDB.getEventsDAO().deleteAllEvents();
     }
 
 }

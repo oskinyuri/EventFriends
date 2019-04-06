@@ -7,8 +7,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.paging.PagedList;
 import io.eventfriends.domain.entity.Event;
+import io.eventfriends.domain.entity.LoadState;
 import io.eventfriends.domain.interactors.AuthInteractor;
 import io.eventfriends.domain.interactors.LoadEventsInteractor;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -25,28 +28,54 @@ public class EventListPresenter {
     private AuthInteractor mAuthInteractor;
     private CompositeDisposable mCompositeDisposable;
     private LoadEventsInteractor mEventsInteractor;
-    private Context mContext;
+
+    private MutableLiveData<LoadState> mLoadStatusLiveData;
+    private Observer<LoadState> mLoadStateObserver;
+
+    private LiveData<PagedList<Event>> mEventsListLiveData;
+    private Observer<PagedList<Event>> mEventsObserver;
 
     public EventListPresenter(AuthInteractor authInteractor,
                               CompositeDisposable compositeDisposable,
-                              LoadEventsInteractor loadEventsInteractor,
-                              Context context
+                              LoadEventsInteractor loadEventsInteractor
     ) {
 
         mAuthInteractor = authInteractor;
         mCompositeDisposable = compositeDisposable;
         mEventsInteractor = loadEventsInteractor;
-        mContext = context;
+
+        mLoadStatusLiveData = mEventsInteractor.getLoadStatus();
+        mLoadStateObserver = loadState -> {
+            switch (loadState.getStatus()){
+                case SUCCESS:
+                    mView.hideProgress();
+                    break;
+                case RUNNING:
+                    mView.showProgress();
+                    break;
+                case FAILED:
+                    mView.hideProgress();
+                    mView.showToast(loadState.getMsg());
+                    break;
+            }
+        };
+
+        mEventsListLiveData = mEventsInteractor.getEvents();
+        mEventsObserver = eventList -> mView.updateList(eventList);
     }
 
     public void onAttach(EventListView view) {
         mView = view;
         getFirebaseAuth();
+        mLoadStatusLiveData.observeForever(mLoadStateObserver);
+        mEventsListLiveData.observeForever(mEventsObserver);
     }
 
     public void onDetach() {
         mView = null;
         mCompositeDisposable.clear();
+        mLoadStatusLiveData.removeObserver(mLoadStateObserver);
+        mEventsListLiveData.removeObserver(mEventsObserver);
     }
 
     public void signOut() {
@@ -70,38 +99,10 @@ public class EventListPresenter {
                 }));
     }
 
-    public LiveData<PagedList<Event>> loadEvents() {
-        mView.showProgress();
-        return mEventsInteractor.getEvents();
-    }
-
-    public void loadEventsFromBD() {
-        mView.showProgress();
-        mCompositeDisposable.add(mEventsInteractor.getEventsPagedListFromDB()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(eventList -> {
-                    mView.updateList(eventList);
-                }));
-    }
-
-    public void loadEventsFormWeb(){
-        mCompositeDisposable.add(mEventsInteractor.getEventsPagedListFromWeb()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(eventList -> {
-                    /*if (eventList.size() == 0){
-                    } else*/
-                    Log.d("new data", "new data");
-                    mView.updateList(eventList);
-                }));
-    }
-
     public void updateEventsList(){
         mEventsInteractor.updateEventsList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
     }
-
 }

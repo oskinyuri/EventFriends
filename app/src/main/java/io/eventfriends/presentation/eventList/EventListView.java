@@ -5,11 +5,13 @@ import io.eventfriends.domain.entity.Event;
 
 public interface EventListView {
 
+    void hideProgress();
+
     void updateList(PagedList<Event> eventList);
 
     void showProgress();
 
-    void hideProgress();
+    void showToast(String msg);
 
     void startSplashScreen();
 

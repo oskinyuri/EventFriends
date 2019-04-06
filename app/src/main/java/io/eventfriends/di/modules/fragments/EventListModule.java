@@ -9,7 +9,6 @@ import dagger.Module;
 import dagger.Provides;
 import io.eventfriends.data.eventsRepository.EventsRepository;
 import io.eventfriends.data.eventsRepository.eventsDataSource.EventsLocalDataSource;
-import io.eventfriends.data.eventsRepository.eventsDataSource.EventsPositionDataSource;
 import io.eventfriends.data.eventsRepository.eventsDataSource.EventsRemoteDataFactory;
 import io.eventfriends.di.qualifiers.ApplicationContext;
 import io.eventfriends.di.qualifiers.EventListContext;
@@ -18,7 +17,6 @@ import io.eventfriends.domain.interactors.AuthInteractor;
 import io.eventfriends.domain.interactors.LoadEventsInteractor;
 import io.eventfriends.domain.repositories.IEventsRepository;
 import io.eventfriends.presentation.eventList.EventListPresenter;
-import io.eventfriends.util.ConnectionObservable;
 import io.reactivex.disposables.CompositeDisposable;
 
 @Module
@@ -45,17 +43,10 @@ public class EventListModule {
 
     @EventListScope
     @Provides
-    public ConnectionObservable getConnectionObservable(@EventListContext Context context){
-        return new ConnectionObservable(context);
-    }
-
-    @EventListScope
-    @Provides
     public EventListPresenter getEventListPresenter(AuthInteractor authInteractor,
                                                     CompositeDisposable compositeDisposable,
-                                                    LoadEventsInteractor loadEventsInteractor,
-                                                    @EventListContext Context context) {
-        return new EventListPresenter(authInteractor, compositeDisposable, loadEventsInteractor, context);
+                                                    LoadEventsInteractor loadEventsInteractor) {
+        return new EventListPresenter(authInteractor, compositeDisposable, loadEventsInteractor);
     }
 
     @EventListScope
@@ -77,7 +68,7 @@ public class EventListModule {
     public PagedList.Config getPagedListConfig() {
         return (new PagedList.Config.Builder())
                 .setEnablePlaceholders(false)
-                .setInitialLoadSizeHint(15)
+                .setInitialLoadSizeHint(20)
                 .setPageSize(10)
                 .build();
     }
@@ -86,12 +77,6 @@ public class EventListModule {
     @Provides
     public EventsRemoteDataFactory getEventsRemoteDataFactory(EventsLocalDataSource eventsLocalDataSource, ExecutorService executorService){
         return new EventsRemoteDataFactory(eventsLocalDataSource, executorService);
-    }
-
-    @EventListScope
-    @Provides
-    public EventsPositionDataSource getEventsPositionDataSource(EventsLocalDataSource eventsLocalDataSource, ExecutorService executorService){
-        return new EventsPositionDataSource(eventsLocalDataSource, executorService);
     }
 
     @EventListScope

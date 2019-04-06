@@ -13,24 +13,26 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import androidx.paging.ItemKeyedDataSource;
-import androidx.room.Database;
 import io.eventfriends.domain.entity.Event;
+import io.eventfriends.domain.entity.LoadState;
 
 public class EventsRemoteDataSource extends ItemKeyedDataSource<String, Event> {
 
     private EventsLocalDataSource mLocalDataSource;
     private ExecutorService mExecutorService;
+    private MutableLiveData<LoadState> mLoadStatus;
 
     public EventsRemoteDataSource(EventsLocalDataSource localDataSource,
                                   ExecutorService executorService) {
         mLocalDataSource = localDataSource;
         mExecutorService = executorService;
+        mLoadStatus = new MutableLiveData<>();
     }
 
     @Override
     public void loadInitial(@NonNull LoadInitialParams<String> params, @NonNull LoadInitialCallback<Event> callback) {
-
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Events");
         Query newQuery = reference.orderByKey().limitToLast(params.requestedLoadSize);
@@ -45,7 +47,11 @@ public class EventsRemoteDataSource extends ItemKeyedDataSource<String, Event> {
                 }
 
                 Collections.reverse(mTempData);
-                mExecutorService.execute(() -> mLocalDataSource.addEvents(mTempData));
+                mExecutorService.execute(() -> {
+                    mLocalDataSource.deleteAll();
+                    mLocalDataSource.addEvents(mTempData);
+                });
+                mLoadStatus.postValue(LoadState.LOADED);
                 callback.onResult(mTempData);
             }
 
@@ -74,6 +80,9 @@ public class EventsRemoteDataSource extends ItemKeyedDataSource<String, Event> {
                     }
                 }
                 Collections.reverse(mTempData);
+                mExecutorService.execute(() -> {
+                    mLocalDataSource.addEvents(mTempData);
+                });
                 callback.onResult(mTempData);
             }
 
@@ -82,6 +91,10 @@ public class EventsRemoteDataSource extends ItemKeyedDataSource<String, Event> {
 
             }
         });
+    }
+
+    public MutableLiveData<LoadState> getLoadStatus(){
+        return mLoadStatus;
     }
 
     @Override
