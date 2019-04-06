@@ -1,5 +1,8 @@
 package io.eventfriends.domain.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -8,7 +11,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class Event {
+public class Event implements Parcelable {
 
     public static final String USER_ID = "userId";
     public static final String USER_NAME = "userName";
@@ -202,6 +205,57 @@ public class Event {
         @Override
         public boolean areContentsTheSame(@NonNull Event oldItem, @NonNull Event newItem) {
             return oldItem.equals(newItem);
+        }
+    };
+
+    protected Event(Parcel in) {
+        uniqueId = in.readString();
+        userId = in.readString();
+        userName = in.readString();
+        userPhotoUrl = in.readString();
+        timestamp = in.readString();
+        titleEvent = in.readString();
+        dateEvent = in.readString();
+        timeEvent = in.readString();
+        locationEvent = in.readString();
+        eventLink = in.readString();
+        eventType = in.readString();
+        userFeedbackLink = in.readString();
+        additionalInfo = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(uniqueId);
+        dest.writeString(userId);
+        dest.writeString(userName);
+        dest.writeString(userPhotoUrl);
+        dest.writeString(timestamp);
+        dest.writeString(titleEvent);
+        dest.writeString(dateEvent);
+        dest.writeString(timeEvent);
+        dest.writeString(locationEvent);
+        dest.writeString(eventLink);
+        dest.writeString(eventType);
+        dest.writeString(userFeedbackLink);
+        dest.writeString(additionalInfo);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Event> CREATOR = new Parcelable.Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
         }
     };
 }

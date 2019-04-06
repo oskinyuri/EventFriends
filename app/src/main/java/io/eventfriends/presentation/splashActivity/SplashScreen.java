@@ -81,7 +81,7 @@ public class SplashScreen extends AppCompatActivity implements SplashView {
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, SplashScreen.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 }

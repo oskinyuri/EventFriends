@@ -36,6 +36,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
+                android:hint="@string/event_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/create_event_person_link_image_view"
                 app:layout_constraintTop_toTopOf="parent">
@@ -44,7 +45,6 @@
                     android:id="@+id/create_event_title_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="@string/event_title"
                     android:inputType="textUri"
                     android:maxLines="1" />
 
@@ -68,6 +68,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:hint="@string/set_date"
                 app:layout_constraintBottom_toTopOf="@+id/create_event_time_edit_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/create_event_date_image_view"
@@ -78,7 +79,7 @@
                     android:id="@+id/create_event_date_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/set_date"
+
                     android:inputType="date"
                     android:maxLines="1"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -104,6 +105,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:hint="@string/set_time"
                 app:layout_constraintBottom_toTopOf="@+id/create_event_location_edit_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/create_event_time_image_view"
@@ -113,7 +115,7 @@
                     android:id="@+id/create_event_time_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/set_time"
+
                     android:inputType="time"
                     android:maxLines="1" />
 
@@ -137,6 +139,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:hint="@string/add_location"
                 app:layout_constraintBottom_toTopOf="@+id/create_event_event_link_edit_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/create_event_location_image_view"
@@ -146,7 +149,6 @@
                     android:id="@+id/create_event_location_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/add_location"
                     android:inputType="textPostalAddress"
                     android:maxLines="1" />
 
@@ -170,6 +172,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:hint="@string/add_event_link"
                 app:layout_constraintBottom_toTopOf="@+id/create_event_event_type_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/create_event_event_link_image_view"
@@ -179,7 +182,6 @@
                     android:id="@+id/create_event_event_link_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/add_event_link"
                     android:inputType="textUri"
                     android:maxLines="1" />
 
@@ -203,6 +205,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:hint="@string/event_type"
                 app:layout_constraintBottom_toTopOf="@+id/create_event_person_link_edit_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/create_event_type_view"
@@ -213,7 +216,6 @@
                     android:id="@+id/create_event_type_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:hint="@string/event_type"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp" />
 
@@ -237,6 +239,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:hint="@string/link_for_feedback_with_you"
                 app:layout_constraintBottom_toTopOf="@+id/create_event_additional_info_edit_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/create_event_person_link_image_view"
@@ -246,7 +249,6 @@
                     android:id="@+id/create_event_person_link_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="@string/link_for_feedback_with_you"
                     android:inputType="textUri"
                     android:maxLines="1" />
 
@@ -272,6 +274,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
+                android:hint="@string/additional_info"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_min="72dp"
@@ -282,8 +285,7 @@
                     android:id="@+id/create_event_additional_info_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="top"
-                    android:hint="@string/additional_info" />
+                    android:gravity="top" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -305,8 +307,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

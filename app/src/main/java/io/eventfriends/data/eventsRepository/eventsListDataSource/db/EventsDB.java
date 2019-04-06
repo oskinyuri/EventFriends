@@ -1,4 +1,4 @@
-package io.eventfriends.data.eventsRepository.db;
+package io.eventfriends.data.eventsRepository.eventsListDataSource.db;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;

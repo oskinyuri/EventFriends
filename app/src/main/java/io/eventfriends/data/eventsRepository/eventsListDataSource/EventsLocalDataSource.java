@@ -1,4 +1,4 @@
-package io.eventfriends.data.eventsRepository.eventsDataSource;
+package io.eventfriends.data.eventsRepository.eventsListDataSource;
 
 import android.content.Context;
 
@@ -6,7 +6,7 @@ import java.util.List;
 
 import androidx.paging.DataSource;
 import androidx.room.Room;
-import io.eventfriends.data.eventsRepository.db.EventsDB;
+import io.eventfriends.data.eventsRepository.eventsListDataSource.db.EventsDB;
 import io.eventfriends.domain.entity.Event;
 
 public class EventsLocalDataSource {

@@ -1,4 +1,4 @@
-package io.eventfriends.data.eventsRepository.db;
+package io.eventfriends.data.eventsRepository.eventsListDataSource.db;
 
 import java.util.List;
 

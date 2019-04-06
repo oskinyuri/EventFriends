@@ -1,4 +1,4 @@
-package io.eventfriends.data.eventsRepository.eventsDataSource;
+package io.eventfriends.data.eventsRepository.eventsListDataSource;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

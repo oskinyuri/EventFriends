@@ -80,7 +80,7 @@ public class EventsListFragment extends Fragment implements EventListView {
 
         mFabButton = view.findViewById(R.id.list_events_bottom_fab);
         mFabButton.setOnClickListener((v) -> {
-            mNavController.navigate(R.id.action_eventsListFragment_to_createEventFragment);
+            mNavController.navigate(R.id.createEventAction);
         });
         return view;
     }

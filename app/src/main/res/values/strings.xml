@@ -4,7 +4,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="event_type">Event type</string>
     <string name="event_text_body">Event text body bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</string>
     <string name="message">Message</string>
     <string name="more">More</string>
@@ -18,4 +17,15 @@
     <string name="additional_info">Additional info</string>
     <string name="create_btn">Create</string>
     <string name="event_title">Event title</string>
+    <string name="event_creator">EVENT CREATOR</string>
+    <string name="creator_name">Creator name</string>
+    <string name="about">About</string>
+    <string name="time">Time</string>
+    <string name="date">Date</string>
+    <string name="link_on_creator">Link on creator</string>
+    <string name="link_on_event">Link on event</string>
+    <string name="city">City</string>
+    <string name="link">link</string>
+    <string name="event_type">Event type</string>
+    <string name="address">Address</string>
 </resources>

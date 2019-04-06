@@ -9,7 +9,6 @@ import io.eventfriends.domain.repositories.IAuthRepository;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
-//TODO
 public class AuthRepository implements IAuthRepository {
 
     private IAuthDataSource mAuthDataSource;

@@ -11,12 +11,26 @@
         android:label="Event list"
         tools:layout="@layout/fragment_events_list">
         <action
-            android:id="@+id/action_eventsListFragment_to_createEventFragment"
+            android:id="@+id/createEventAction"
             app:destination="@id/createEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/createEventFragment"
         android:name="io.eventfriends.presentation.createEvent.CreateEventFragment"
         android:label="Create event"
-        tools:layout="@layout/fragment_create_event" />
+        tools:layout="@layout/fragment_create_event" >
+        <action
+            android:id="@+id/openEventAfterCreateAction"
+            app:destination="@id/pageEventFragment"
+            app:popUpTo="@+id/eventsListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pageEventFragment"
+        android:name="io.eventfriends.presentation.pageEvent.PageEventFragment"
+        android:label="Event"
+        tools:layout="@layout/fragment_event_page">
+        <argument
+            android:name="eventKey"
+            app:argType="string" />
+    </fragment>
 </navigation>

@@ -29,6 +29,7 @@ import io.eventfriends.EventFriendsApp;
 import io.eventfriends.R;
 import io.eventfriends.di.components.CreateEventComponent;
 import io.eventfriends.domain.entity.Event;
+import io.eventfriends.presentation.pageEvent.PageEventFragment;
 
 public class CreateEventFragment extends Fragment implements CreateEventView {
 
@@ -71,8 +72,6 @@ public class CreateEventFragment extends Fragment implements CreateEventView {
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
         initViews(view);
         return view;
-
-
     }
 
     private void initViews(View view) {
@@ -159,10 +158,19 @@ public class CreateEventFragment extends Fragment implements CreateEventView {
                 mEvent.setUserFeedbackLink(mFeedbackET.getText().toString());
                 mEvent.setAdditionalInfo(mAdditionalInfoED.getText().toString());
 
-                mPresenter.setEvent(mEvent);
+                //TODO uncomment it, it work code
+                //mPresenter.setEvent(mEvent);
+                startPageEventFragment(mEvent);
             }
 
         });
+    }
+
+    public void startPageEventFragment(Event event) {
+        //TODO после получения state LOADED передавать ключ Event's key. Не удалять переделать
+        /*CreateEventFragmentDirections.OpenEventAfterCreateAction action = CreateEventFragmentDirections.openEventAfterCreateAction(event, 2);
+        navController.navigate(action);*/
+        navController.navigate(R.id.openEventAfterCreateAction);
     }
 
     @Override
