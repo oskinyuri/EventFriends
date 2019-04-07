@@ -76,6 +76,13 @@ public class EventsListFragment extends Fragment implements EventListView {
         RecyclerView.LayoutManager linearLayout = new LinearLayoutManager(container.getContext());
         mRecyclerView.setLayoutManager(linearLayout);
         mListAdapter = new EventListAdapter();
+        mListAdapter.setOnItemClickListener(v -> {
+            RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) v.getTag();
+            int position = viewHolder.getAdapterPosition();
+            String eventKey = Objects.requireNonNull(Objects.requireNonNull(mListAdapter.getCurrentList()).get(position)).getUniqueId();
+            EventsListFragmentDirections.OpenEventFromList action = EventsListFragmentDirections.openEventFromList(eventKey);
+            mNavController.navigate(action);
+        });
         mRecyclerView.setAdapter(mListAdapter);
 
         mFabButton = view.findViewById(R.id.list_events_bottom_fab);

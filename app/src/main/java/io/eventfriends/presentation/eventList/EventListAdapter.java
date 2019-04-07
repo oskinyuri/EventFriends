@@ -24,9 +24,14 @@ import io.eventfriends.domain.entity.User;
 public class EventListAdapter extends PagedListAdapter<Event, EventListAdapter.EventHolder> {
 
     private int[] mData;
+    private View.OnClickListener mOnClickListener;
 
     public EventListAdapter() {
         super(Event.DIFF_CALLBACK);
+    }
+
+    public void setOnItemClickListener(View.OnClickListener onClickListener){
+        mOnClickListener = onClickListener;
     }
 
     public void submitList(@Nullable PagedList<Event> pagedList) {
@@ -56,9 +61,11 @@ public class EventListAdapter extends PagedListAdapter<Event, EventListAdapter.E
         public TextView eventTitle;
         public TextView eventText;
 
-        public MaterialButton msgBtn;
+        //Not implemented functional
+        //public MaterialButton msgBtn;
+        //public MaterialButton hideBtn;
+
         public MaterialButton moreBtn;
-        public MaterialButton hideBtn;
 
         public ImageButton likeBtn;
 
@@ -70,12 +77,17 @@ public class EventListAdapter extends PagedListAdapter<Event, EventListAdapter.E
             eventTitle = itemView.findViewById(R.id.event_item_title);
             eventText = itemView.findViewById(R.id.event_item_text);
 
-            msgBtn = itemView.findViewById(R.id.event_item_msg_btn);
+            //Not implemented functional
+            //msgBtn = itemView.findViewById(R.id.event_item_msg_btn);
+            //hideBtn = itemView.findViewById(R.id.event_item_hide_btn);
+
             moreBtn = itemView.findViewById(R.id.event_item_more_btn);
-            hideBtn = itemView.findViewById(R.id.event_item_hide_btn);
             likeBtn = itemView.findViewById(R.id.event_item_like_btn);
 
             profilePhoto = itemView.findViewById(R.id.event_item_profile_photo);
+
+            moreBtn.setTag(this);
+            moreBtn.setOnClickListener(mOnClickListener);
         }
 
         public void bindOn(Event event){

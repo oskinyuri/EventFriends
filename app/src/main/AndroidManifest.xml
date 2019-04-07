@@ -4,6 +4,7 @@
     package="io.eventfriends">
 
     <application
+        android:screenOrientation="portrait"
         android:name=".EventFriendsApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

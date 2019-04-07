@@ -13,7 +13,7 @@
         android:layout_marginTop="24dp"
         android:letterSpacing="0"
         android:text="@string/event_type"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/page_event_type_img"
         app:layout_constraintTop_toBottomOf="@+id/page_event_time_text_view" />
 
@@ -123,7 +123,7 @@
                 android:layout_marginEnd="8dp"
                 android:letterSpacing="0"
                 android:text="@string/address"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/page_event_location_img"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -137,7 +137,7 @@
                 android:layout_marginBottom="8dp"
                 android:letterSpacing="0"
                 android:text="@string/link"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/page_event_location_img"
                 app:layout_constraintTop_toBottomOf="@+id/page_event_city_text_view" />
@@ -184,7 +184,7 @@
                 android:layout_marginEnd="8dp"
                 android:letterSpacing="0"
                 android:text="@string/link_on_event"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/page_event_link_img"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -199,7 +199,7 @@
                 android:layout_marginBottom="8dp"
                 android:letterSpacing="0"
                 android:text="@string/link"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/page_event_link_img"
@@ -246,7 +246,7 @@
                 android:layout_marginTop="8dp"
                 android:letterSpacing="0"
                 android:text="@string/link_on_creator"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/page_event_person_img"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -260,7 +260,7 @@
                 android:layout_marginBottom="8dp"
                 android:letterSpacing="0"
                 android:text="@string/link"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/page_event_person_img"
@@ -309,19 +309,21 @@
         app:layout_constraintEnd_toStartOf="@+id/page_event_profile_photo"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/page_event_profile_photo" />
 
     <TextView
         android:id="@+id/page_event_creator_name_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif-medium"
         android:letterSpacing="0.15"
         android:text="@string/creator_name"
         android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/page_event_profile_photo"
         app:layout_constraintEnd_toStartOf="@+id/page_event_profile_photo"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -335,7 +337,7 @@
         android:layout_marginTop="8dp"
         android:letterSpacing="0"
         android:text="@string/date"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/page_event_date_img"
         app:layout_constraintTop_toBottomOf="@+id/page_event_profile_photo" />
 
@@ -347,19 +349,21 @@
         android:layout_marginTop="24dp"
         android:letterSpacing="0"
         android:text="@string/time"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/page_event_time_img"
         app:layout_constraintTop_toBottomOf="@+id/page_event_date_text_view" />
 
     <TextView
         android:id="@+id/page_event_about_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:letterSpacing="0"
         android:text="@string/about"
-        android:textSize="16sp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/page_event_additional_info_image_view3"
         app:layout_constraintTop_toBottomOf="@+id/page_divider_person_link_about" />
 
@@ -372,6 +376,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/event_text_body"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

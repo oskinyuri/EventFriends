@@ -84,53 +84,27 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/event_item_msg_btn"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
+            android:id="@+id/event_item_more_btn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/message"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/event_item_more_btn"
-            app:layout_constraintHorizontal_bias="0.5"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/more"
+            app:layout_constraintEnd_toStartOf="@+id/event_item_like_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/event_item_more_btn"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/more"
-            app:layout_constraintBottom_toBottomOf="@+id/event_item_msg_btn"
-            app:layout_constraintEnd_toStartOf="@+id/event_item_hide_btn"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/event_item_msg_btn"
-            app:layout_constraintTop_toTopOf="@+id/event_item_msg_btn" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/event_item_hide_btn"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hide"
-            app:layout_constraintBottom_toBottomOf="@+id/event_item_more_btn"
-            app:layout_constraintEnd_toStartOf="@+id/event_item_like_btn"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/event_item_more_btn"
-            app:layout_constraintTop_toTopOf="@+id/event_item_more_btn" />
 
         <ImageButton
             android:id="@+id/event_item_like_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:background="@android:drawable/screen_background_light_transparent"
-            app:layout_constraintBottom_toBottomOf="@+id/event_item_hide_btn"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/event_item_hide_btn"
-            app:layout_constraintTop_toTopOf="@+id/event_item_hide_btn"
+            app:layout_constraintTop_toTopOf="@+id/guideline"
             app:srcCompat="@drawable/un_like" />
 
         <androidx.constraintlayout.widget.Guideline

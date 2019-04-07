@@ -1,5 +1,7 @@
 package io.eventfriends.presentation.pageEvent;
 
+import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -111,7 +113,15 @@ public class EventPageFragment extends Fragment implements EventPageView {
             String url = mEvent.getEventLink();
             Intent browserIntent = new Intent(Intent.ACTION_VIEW);
             browserIntent.setData(Uri.parse(url));
-            startActivity(browserIntent);
+            try {
+                startActivity(browserIntent);
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+
+                Intent searchIntent = new Intent(Intent.ACTION_WEB_SEARCH);
+                searchIntent.putExtra(SearchManager.QUERY, url);
+                startActivity(searchIntent);
+            }
         });
 
         mLinkPersonCardView = view.findViewById(R.id.person_link_card_view);
@@ -119,7 +129,15 @@ public class EventPageFragment extends Fragment implements EventPageView {
             String url = mEvent.getUserFeedbackLink();
             Intent browserPersonIntent = new Intent(Intent.ACTION_VIEW);
             browserPersonIntent.setData(Uri.parse(url));
-            startActivity(browserPersonIntent);
+            try {
+                startActivity(browserPersonIntent);
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+
+                Intent searchIntent = new Intent(Intent.ACTION_WEB_SEARCH);
+                searchIntent.putExtra(SearchManager.QUERY, url);
+                startActivity(searchIntent);
+            }
 
         });
     }
