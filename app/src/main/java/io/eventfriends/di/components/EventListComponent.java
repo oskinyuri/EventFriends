@@ -8,5 +8,5 @@ import io.eventfriends.presentation.eventList.EventsListFragment;
 @Component (dependencies = AppComponent.class, modules = EventListModule.class)
 @EventListScope
 public interface EventListComponent {
-    void injectEventList(EventsListFragment eventsListFragment);
+    void injectEventList(EventsListFragment fragment);
 }

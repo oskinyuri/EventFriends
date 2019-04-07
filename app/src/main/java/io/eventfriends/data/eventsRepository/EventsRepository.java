@@ -8,12 +8,16 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
+import io.eventfriends.data.eventsRepository.eventDataSource.CurrentEventDataSource;
 import io.eventfriends.data.eventsRepository.eventsListDataSource.EventsLocalDataSource;
 import io.eventfriends.data.eventsRepository.eventsListDataSource.EventsRemoteDataFactory;
 import io.eventfriends.domain.entity.Event;
 import io.eventfriends.domain.entity.LoadState;
 import io.eventfriends.domain.repositories.IEventsRepository;
+import io.eventfriends.util.UtilNetworkState;
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import io.reactivex.subjects.BehaviorSubject;
 
 @SuppressWarnings("unchecked")
 public class EventsRepository implements IEventsRepository {
@@ -22,21 +26,27 @@ public class EventsRepository implements IEventsRepository {
     private PagedList.Config mPagedListConfig;
     private EventsLocalDataSource mEventsLocalDataSource;
 
+    private CurrentEventDataSource mCurrentCurrentEventDataSource;
+    private BehaviorSubject<LoadState> mCurrentEventLoadState;
+
     final private MediatorLiveData liveDataMerger;
-    private MutableLiveData<LoadState> mLoadStatus;
+    private MutableLiveData<LoadState> mEventsListLoadState;
 
     LiveData<PagedList<Event>> databaseSource;
     LiveData<PagedList<Event>> remoteSource;
 
     public EventsRepository(PagedList.Config pagedListConfig,
                             EventsRemoteDataFactory eventsRemoteDataFactory,
-                            EventsLocalDataSource eventsLocalDataSource) {
+                            EventsLocalDataSource eventsLocalDataSource,
+                            CurrentEventDataSource currentCurrentEventDataSource) {
 
         mPagedListConfig = pagedListConfig;
         mEventsRemoteDataFactory = eventsRemoteDataFactory;
         mEventsLocalDataSource = eventsLocalDataSource;
+        mCurrentCurrentEventDataSource = currentCurrentEventDataSource;
 
-        mLoadStatus = mEventsRemoteDataFactory.getNetworkStatus();
+        mEventsListLoadState = mEventsRemoteDataFactory.getNetworkStatus();
+        mCurrentEventLoadState = mCurrentCurrentEventDataSource.getCurrentEventLoadState();
 
         liveDataMerger = new MediatorLiveData<>();
 
@@ -44,12 +54,12 @@ public class EventsRepository implements IEventsRepository {
                 .setBoundaryCallback(new PagedList.BoundaryCallback() {
                     @Override
                     public void onZeroItemsLoaded() {
-                        mLoadStatus.setValue(LoadState.FAILED);
+                        mEventsListLoadState.setValue(LoadState.FAILED);
                     }
 
                     @Override
                     public void onItemAtFrontLoaded(@NonNull Object itemAtFront) {
-                        mLoadStatus.setValue(LoadState.FAILED);
+                        mEventsListLoadState.setValue(LoadState.FAILED);
                     }
                 })
                 .build();
@@ -58,7 +68,7 @@ public class EventsRepository implements IEventsRepository {
                 .setBoundaryCallback(new PagedList.BoundaryCallback() {
                     @Override
                     public void onZeroItemsLoaded() {
-                        mLoadStatus.setValue(LoadState.FAILED);
+                        mEventsListLoadState.setValue(LoadState.FAILED);
                     }
                 })
                 .build();
@@ -74,13 +84,13 @@ public class EventsRepository implements IEventsRepository {
 
     @Override
     public Completable updateEventsList() {
-        if (isOnline()) {
+        if (UtilNetworkState.isOnline()) {
             liveDataMerger.removeSource(remoteSource);
             remoteSource = new LivePagedListBuilder(mEventsRemoteDataFactory, mPagedListConfig)
                     .setBoundaryCallback(new PagedList.BoundaryCallback() {
                         @Override
                         public void onZeroItemsLoaded() {
-                            mLoadStatus.setValue(LoadState.FAILED);
+                            mEventsListLoadState.setValue(LoadState.FAILED);
                         }
                     })
                     .build();
@@ -93,28 +103,29 @@ public class EventsRepository implements IEventsRepository {
             if (!remoteSource.hasActiveObservers() & !databaseSource.hasActiveObservers()) {
                 liveDataMerger.addSource(databaseSource, liveDataMerger::setValue);
             } else {
-                mLoadStatus.setValue(LoadState.FAILED);
+                mEventsListLoadState.setValue(LoadState.FAILED);
             }
         }
         return Completable.complete();
     }
 
     @Override
-    public MutableLiveData<LoadState> getLoadStatus() {
-        return mLoadStatus;
+    public MutableLiveData<LoadState> getEventsListLoadState() {
+        return mEventsListLoadState;
     }
 
-    private boolean isOnline() {
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
-            int exitValue = ipProcess.waitFor();
-            return (exitValue == 0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return false;
+    @Override
+    public BehaviorSubject<Event> getEvent(String key) {
+        return mCurrentCurrentEventDataSource.getEvent(key);
+    }
+
+    @Override
+    public Maybe<String> pushEvent(Event event) {
+        return mCurrentCurrentEventDataSource.pushEvent(event);
+    }
+
+    @Override
+    public BehaviorSubject<LoadState> getCurrentEventLoadState() {
+        return mCurrentEventLoadState;
     }
 }

@@ -13,6 +13,7 @@ import io.eventfriends.di.modules.app.AuthModule;
 import io.eventfriends.di.modules.app.ContextModule;
 import io.eventfriends.di.qualifiers.ApplicationContext;
 import io.eventfriends.domain.interactors.AuthInteractor;
+import io.eventfriends.domain.interactors.LoadEventsInteractor;
 
 @Component(modules = {
         ContextModule.class,
@@ -22,6 +23,8 @@ import io.eventfriends.domain.interactors.AuthInteractor;
 public interface AppComponent {
 
     AuthInteractor getAuthInteractor();
+
+    LoadEventsInteractor getLoadEventsInteractor();
 
     @ApplicationContext
     Context getContext();

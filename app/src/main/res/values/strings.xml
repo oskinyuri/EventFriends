@@ -17,7 +17,7 @@
     <string name="additional_info">Additional info</string>
     <string name="create_btn">Create</string>
     <string name="event_title">Event title</string>
-    <string name="event_creator">EVENT CREATOR</string>
+    <string name="event_creator">CREATOR</string>
     <string name="creator_name">Creator name</string>
     <string name="about">About</string>
     <string name="time">Time</string>

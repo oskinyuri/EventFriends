@@ -7,26 +7,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import io.eventfriends.EventFriendsApp;
 import io.eventfriends.R;
+import io.eventfriends.di.components.EventPageComponent;
 import io.eventfriends.domain.entity.Event;
 import io.eventfriends.domain.entity.User;
 
-public class PageEventFragment extends Fragment {
+public class EventPageFragment extends Fragment implements EventPageView {
 
     private Event mEvent;
+    private String mKey;
 
     private CardView mLocationCardView;
     private CardView mLinkEventCardView;
@@ -43,33 +51,41 @@ public class PageEventFragment extends Fragment {
     private TextView mLinkOnCreator;
     private TextView mAdditionalInfoTV;
 
+    @Inject
+    public EventPagePresenter mPresenter;
+
+    private ProgressBar mProgressBar;
+
     NavController navController;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         navController = Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.main_host_fragment);
-        //TODO в тулбар после полученния данных выводить название event'а
+
+        EventPageComponent component = EventFriendsApp.getInstance().getComponentsBuilder().getEventPageComponent();
+        component.injectEventPage(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_event_page, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_event_page, container, false);
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        initViews(view);
 
-        //TODO получать ключ Event'а и сетить данные
-        //setDataInViews();
+        mKey = EventPageFragmentArgs.fromBundle(Objects.requireNonNull(getArguments())).getEventKey();
+        initViews(view);
     }
 
     private void initViews(View view) {
+
+        mProgressBar = view.findViewById(R.id.pageProgressBar);
 
         mProfileImg = view.findViewById(R.id.page_event_profile_photo);
 
@@ -108,7 +124,40 @@ public class PageEventFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.onAttach(this);
+        mPresenter.getEvent(mKey);
+    }
+
+    @Override
+    public void showProgress() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showToast(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setEvent(Event event) {
+        mEvent = event;
+        setDataInViews();
+    }
+
     private void setDataInViews() {
+
+        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity()))
+                .getSupportActionBar())
+                .setTitle(mEvent.getTitleEvent());
+
         mCreatorNameTV.setText(mEvent.getUserName());
         mDateTV.setText(mEvent.getDateEvent());
         mTimeTV.setText(mEvent.getTimeEvent());
@@ -118,15 +167,21 @@ public class PageEventFragment extends Fragment {
         mLinkOnCreator.setText(mEvent.getUserFeedbackLink());
         mAdditionalInfoTV.setText(mEvent.getAdditionalInfo());
 
-        if (!mEvent.getUserPhotoUrl().equals(User.DEFAULT_PROFLIE_IMG)){
-            Glide.with(getContext())
+        if (!mEvent.getUserPhotoUrl().equals(User.DEFAULT_PROFLIE_IMG)) {
+            Glide.with(Objects.requireNonNull(getContext()))
                     .load(mEvent.getUserPhotoUrl())
                     .apply(RequestOptions.circleCropTransform())
                     .into(mProfileImg);
         } else {
-            Glide.with(getContext())
+            Glide.with(Objects.requireNonNull(getContext()))
                     .load(R.drawable.default_user_image)
                     .into(mProfileImg);
         }
+    }
+
+    @Override
+    public void onPause() {
+        mPresenter.onDetach();
+        super.onPause();
     }
 }

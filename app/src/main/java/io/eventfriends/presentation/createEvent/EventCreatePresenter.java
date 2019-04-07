@@ -2,20 +2,19 @@ package io.eventfriends.presentation.createEvent;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 
 import io.eventfriends.domain.interactors.AuthInteractor;
 import io.eventfriends.domain.entity.Event;
 import io.eventfriends.domain.entity.User;
+import io.eventfriends.domain.interactors.LoadEventsInteractor;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class CreateEventPresenter {
-    private CreateEventView mView;
+public class EventCreatePresenter {
+    private EventCreateView mView;
 
     private FirebaseAuth mFirebaseAuth;
 
@@ -23,16 +22,20 @@ public class CreateEventPresenter {
     private AuthInteractor mAuthInteractor;
     private CompositeDisposable mCompositeDisposable;
 
+    private LoadEventsInteractor mLoadEventsInteractor;
+
     private Event mEvent;
 
-    public CreateEventPresenter(AuthInteractor authInteractor,
-                              CompositeDisposable compositeDisposable) {
+    public EventCreatePresenter(AuthInteractor authInteractor,
+                                CompositeDisposable compositeDisposable,
+                                LoadEventsInteractor loadEventsInteractor) {
 
         mAuthInteractor = authInteractor;
         mCompositeDisposable = compositeDisposable;
+        mLoadEventsInteractor = loadEventsInteractor;
     }
 
-    public void onAttach(CreateEventView view){
+    public void onAttach(EventCreateView view) {
         mView = view;
         getFirebaseAuth();
     }
@@ -40,11 +43,6 @@ public class CreateEventPresenter {
     public void onDetach() {
         mView = null;
         mCompositeDisposable.clear();
-    }
-
-    private void updateUI() {
-        //TODO если все ок вернутся на главны, или если будет время перейти на созданный евент, это
-        //TODO nested navcomponent practice
     }
 
     private void getFirebaseAuth() {
@@ -58,16 +56,9 @@ public class CreateEventPresenter {
 
     }
 
-    public void setEvent(Event event) {
+    public void pushEvent(Event event) {
+
         mEvent = event;
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference eventsRef = database.getReference("Events");
-
-        // Generate firebase unique id
-        String uniqueId = eventsRef.push().getKey();
-        // Set firebase generated if
-        mEvent.setUniqueId(uniqueId);
 
         // Set info about user
         mEvent.setUserId(mFirebaseUser.getUid());
@@ -77,7 +68,32 @@ public class CreateEventPresenter {
         // Set timestamp
         mEvent.setTimestamp(String.valueOf(Calendar.getInstance().getTimeInMillis()));
 
-        if (uniqueId != null)
-        eventsRef.child(uniqueId).setValue(mEvent);
+        mCompositeDisposable.add(mLoadEventsInteractor.getCurrentEventLoadState()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(loadState -> {
+            switch (loadState.getStatus()) {
+                case SUCCESS:
+                    mView.hideProgress();
+                    break;
+                case RUNNING:
+                    mView.showProgress();
+                    break;
+                case FAILED:
+                    mView.hideProgress();
+                    mView.showToast(loadState.getMsg());
+                    break;
+            }
+        }));
+
+        mCompositeDisposable.add(mLoadEventsInteractor.pushEvent(mEvent)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe( key -> {
+                    if (key != null && mView != null)
+                        mView.startPageEventFragment(key);
+                }));
+
+
     }
 }

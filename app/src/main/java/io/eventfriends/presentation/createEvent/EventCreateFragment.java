@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
@@ -27,17 +28,16 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import io.eventfriends.EventFriendsApp;
 import io.eventfriends.R;
-import io.eventfriends.di.components.CreateEventComponent;
+import io.eventfriends.di.components.EventCreateComponent;
 import io.eventfriends.domain.entity.Event;
-import io.eventfriends.presentation.pageEvent.PageEventFragment;
 
-public class CreateEventFragment extends Fragment implements CreateEventView {
+public class EventCreateFragment extends Fragment implements EventCreateView {
 
 
     NavController navController;
 
     @Inject
-    public CreateEventPresenter mPresenter;
+    public EventCreatePresenter mPresenter;
 
     private ConstraintLayout mCreateEventLayout;
 
@@ -54,6 +54,8 @@ public class CreateEventFragment extends Fragment implements CreateEventView {
 
     private MaterialButton mCreateBtn;
 
+    private ProgressBar mProgressBar;
+
     private Event mEvent;
 
 
@@ -61,7 +63,7 @@ public class CreateEventFragment extends Fragment implements CreateEventView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         navController = Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.main_host_fragment);
-        CreateEventComponent component = EventFriendsApp.getInstance().getComponentsBuilder().getCreateEventComponent();
+        EventCreateComponent component = EventFriendsApp.getInstance().getComponentsBuilder().getCreateEventComponent();
         component.injectCreateEvent(this);
     }
 
@@ -75,6 +77,8 @@ public class CreateEventFragment extends Fragment implements CreateEventView {
     }
 
     private void initViews(View view) {
+        mProgressBar = view.findViewById(R.id.createProgressBar);
+
         mCreateEventLayout = view.findViewById(R.id.create_event_layout);
         mEditTexts = new ArrayList<>();
         //init edit texts
@@ -159,18 +163,18 @@ public class CreateEventFragment extends Fragment implements CreateEventView {
                 mEvent.setAdditionalInfo(mAdditionalInfoED.getText().toString());
 
                 //TODO uncomment it, it work code
-                //mPresenter.setEvent(mEvent);
-                startPageEventFragment(mEvent);
+                mPresenter.pushEvent(mEvent);
             }
-
         });
     }
 
-    public void startPageEventFragment(Event event) {
+    @Override
+    public void startPageEventFragment(String key) {
         //TODO после получения state LOADED передавать ключ Event's key. Не удалять переделать
-        /*CreateEventFragmentDirections.OpenEventAfterCreateAction action = CreateEventFragmentDirections.openEventAfterCreateAction(event, 2);
-        navController.navigate(action);*/
-        navController.navigate(R.id.openEventAfterCreateAction);
+        //navController.navigate(R.id.openEventAfterCreateAction);
+
+        EventCreateFragmentDirections.OpenEventAfterCreateAction action = EventCreateFragmentDirections.openEventAfterCreateAction(key);
+        navController.navigate(action);
     }
 
     @Override
@@ -189,5 +193,20 @@ public class CreateEventFragment extends Fragment implements CreateEventView {
             }
         }
         return hasError;
+    }
+
+    @Override
+    public void showProgress() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showToast(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressBar.setVisibility(View.GONE);
     }
 }

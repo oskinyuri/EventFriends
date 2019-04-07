@@ -13,10 +13,13 @@
         <action
             android:id="@+id/createEventAction"
             app:destination="@id/createEventFragment" />
+        <action
+            android:id="@+id/openEventFromList"
+            app:destination="@id/pageEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/createEventFragment"
-        android:name="io.eventfriends.presentation.createEvent.CreateEventFragment"
+        android:name="io.eventfriends.presentation.createEvent.EventCreateFragment"
         android:label="Create event"
         tools:layout="@layout/fragment_create_event" >
         <action
@@ -26,7 +29,7 @@
     </fragment>
     <fragment
         android:id="@+id/pageEventFragment"
-        android:name="io.eventfriends.presentation.pageEvent.PageEventFragment"
+        android:name="io.eventfriends.presentation.pageEvent.EventPageFragment"
         android:label="Event"
         tools:layout="@layout/fragment_event_page">
         <argument
