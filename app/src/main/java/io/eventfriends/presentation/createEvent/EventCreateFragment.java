@@ -162,7 +162,6 @@ public class EventCreateFragment extends Fragment implements EventCreateView {
                 mEvent.setUserFeedbackLink(mFeedbackET.getText().toString());
                 mEvent.setAdditionalInfo(mAdditionalInfoED.getText().toString());
 
-                //TODO uncomment it, it work code
                 mPresenter.pushEvent(mEvent);
             }
         });
@@ -170,9 +169,6 @@ public class EventCreateFragment extends Fragment implements EventCreateView {
 
     @Override
     public void startPageEventFragment(String key) {
-        //TODO после получения state LOADED передавать ключ Event's key. Не удалять переделать
-        //navController.navigate(R.id.openEventAfterCreateAction);
-
         EventCreateFragmentDirections.OpenEventAfterCreateAction action = EventCreateFragmentDirections.openEventAfterCreateAction(key);
         navController.navigate(action);
     }
